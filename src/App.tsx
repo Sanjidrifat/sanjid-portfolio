@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent, type ReactNode } from "react";
 import {
   about,
   alsoBuilding,
@@ -9,6 +9,7 @@ import {
   person,
   projects,
   recognition,
+  type Beat,
   type Project,
 } from "./content/site";
 import { Diagram } from "./components/Diagrams";
@@ -139,6 +140,47 @@ function Method() {
   );
 }
 
+const PANELS = ["Reality", "Decision", "Build", "Field"] as const;
+
+function Beats({ items }: { items: [string, Beat][] }) {
+  return (
+    <dl className="beats">
+      {items.map(([label, b]) => (
+        <div className="beat" key={label}>
+          <dt className="mono mute">{label}</dt>
+          <dd>
+            {b.body}
+            <Confirm show={b.confirm} />
+          </dd>
+        </div>
+      ))}
+    </dl>
+  );
+}
+
+function Panel({
+  name,
+  last,
+  visual,
+  children,
+}: {
+  name: (typeof PANELS)[number];
+  last?: boolean;
+  visual: ReactNode;
+  children: ReactNode;
+}) {
+  return (
+    <section className={`panel${last ? " last" : ""}`} aria-label={name}>
+      <div className="panel-label">
+        <span className="display">{name}</span>
+        {!last && <span className="down mono mute">↓</span>}
+      </div>
+      <div className="panel-visual">{visual}</div>
+      <div className="panel-text">{children}</div>
+    </section>
+  );
+}
+
 function ProjectBlock({ p }: { p: Project }) {
   const [main, sub] = p.name.split(" + ");
   return (
@@ -153,65 +195,78 @@ function ProjectBlock({ p }: { p: Project }) {
             {sub && <small>+ {sub}</small>}
           </h3>
           <div className="project-meta mono mute">
-            <span>{p.kind}</span>
             <span>{p.date}</span>
             <span>ZEROOZEN Energy</span>
           </div>
+          <p className="project-opening">{p.opening}</p>
         </div>
       </div>
 
-      <div className="project-body">
-        <div className="plates">
-          <DiagramPlate caption={`Fig. ${p.index}.1 · ${p.kind}`} code={`SHAR-${p.index}-D`}>
-            <Diagram kind={p.diagram} />
-          </DiagramPlate>
-        </div>
-        <div>
-          <p className="project-summary">{p.summary}</p>
-          <div className="specs">
-            {p.figures.map((f) => (
-              <div className="spec" key={f.label}>
-                <span className="v">{f.value}</span>
-                <span className="l">
-                  {f.label}
-                  <Confirm show={f.confirm} />
-                </span>
-              </div>
-            ))}
-          </div>
-          <div className="disciplines mono">
-            {p.disciplines.map((d) => (
-              <span key={d}>{d}</span>
-            ))}
-          </div>
-          <div className="side-photo">
-            <Photo plate={p.plate} path={`/images/${p.id}/photo.jpg`} />
-          </div>
-        </div>
-      </div>
-
-      <ol className="track" style={{ listStyle: "none", padding: 0 }} aria-label={`${p.name}, from reality to result`}>
-        {p.stages.map((s, i) => (
-          <li key={s.label} className={`stage${i === p.stages.length - 1 ? " result" : ""}`}>
-            <div className="label mono">
-              <span className={i === p.stages.length - 1 ? "accent" : ""}>{s.label}</span>
-              {i < p.stages.length - 1 && <span className="arr">→</span>}
+      <div className="panels">
+        <Panel name="Reality" visual={<Photo plate={p.realityPlate} path={`/images/${p.id}/reality.jpg`} />}>
+          <Beats
+            items={[
+              ["Reality", p.reality],
+              ["Need", p.need],
+              ["Customer", p.customer],
+            ]}
+          />
+        </Panel>
+        <Panel
+          name="Decision"
+          visual={
+            <div className="question">
+              <span className="mono mute">The question</span>
+              <p>{p.question}</p>
             </div>
-            <p>
-              {s.body}
-              <Confirm show={s.confirm} />
-            </p>
-          </li>
-        ))}
-      </ol>
-
-      <div className="notes">
-        <span className="mono mute">Field notes</span>
-        <ul>
-          {p.highlights.map((h) => (
-            <li key={h}>{h}</li>
-          ))}
-        </ul>
+          }
+        >
+          <Beats
+            items={[
+              ["Insight", p.insight],
+              ["Decision", p.decision],
+              ["Strategy", p.strategy],
+            ]}
+          />
+        </Panel>
+        <Panel
+          name="Build"
+          visual={
+            <DiagramPlate caption={`Fig. ${p.index} · schematic`} code={`SHAR-${p.index}-D`}>
+              <Diagram kind={p.diagram} />
+            </DiagramPlate>
+          }
+        >
+          <Beats items={[["Technology", p.technology]]} />
+        </Panel>
+        <Panel
+          name="Field"
+          last
+          visual={
+            <div className="field-visual">
+              <Photo plate={p.fieldPlate} path={`/images/${p.id}/field.jpg`} />
+              <div className="specs">
+                {p.figures.map((f) => (
+                  <div className="spec" key={f.label}>
+                    <span className="v">{f.value}</span>
+                    <span className="l">
+                      {f.label}
+                      <Confirm show={f.confirm} />
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          }
+        >
+          <Beats
+            items={[
+              ["Deployment", p.deployment],
+              ["Adoption", p.adoption],
+              ["Learning", p.learning],
+            ]}
+          />
+        </Panel>
       </div>
     </article>
   );
@@ -221,12 +276,33 @@ function Work() {
   return (
     <section className="section" id="work">
       <div className="wrap">
-        <TitleBlock sheet="02" name="Selected work" refCode="SHAR-02 · Rev A" />
+        <TitleBlock sheet="02" name="Selected work" refCode="SHAR-02 · Rev B" />
         <h2 className="display h2">Selected work</h2>
         <p className="work-intro">
-          Four pieces of one system, read the same way: what was really happening, what I noticed, what I decided to
-          bet on, what I built, and what changed.
+          Each of these started with someone’s working day and ended with something running in the field. They read in
+          the order they happened.
         </p>
+
+        <ol className="cards" style={{ listStyle: "none", padding: 0 }}>
+          {projects.map((p) => (
+            <li key={p.id}>
+              <a className="card" href={`#${p.id}`}>
+                <span className="mono mute">{p.index}</span>
+                <b>{p.name}</b>
+                <span className="card-q">{p.question}</span>
+                <span className="card-track mono mute">
+                  {PANELS.map((s, i) => (
+                    <span key={s}>
+                      {s}
+                      {i < PANELS.length - 1 && <i> → </i>}
+                    </span>
+                  ))}
+                </span>
+              </a>
+            </li>
+          ))}
+        </ol>
+
         {projects.map((p) => (
           <ProjectBlock key={p.id} p={p} />
         ))}

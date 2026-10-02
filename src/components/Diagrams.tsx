@@ -155,7 +155,7 @@ function Charger() {
       <line x1={48} y1={cy} x2={612} y2={cy} className="dw-thin" />
       <line x1={48} y1={300} x2={48} y2={cy} className="dw-thin" />
       <polyline points={`48,350 120,350 120,312 ${cx},312 420,340 520,352 612,352`} className="dw-accent" />
-      <polyline points={`48,346 120,336 ${cx},318 420,316 520,324 612,324`} className="dw-line" />
+      <polyline points={`48,346 120,336 ${cx},318 420,316 520,324 612,324`} className="dw-dash" />
       {[
         [84, "Pre"],
         [225, "CC"],
@@ -167,7 +167,7 @@ function Charger() {
       {[120, cx, 520].map((x) => (
         <line key={x} x1={x} y1={300} x2={x} y2={cy} className="dw-dash" />
       ))}
-      <text x={612} y={308} textAnchor="end" className="dw-text">— V   <tspan className="or" style={{ fill: "var(--orange)" }}>— I</tspan></text>
+      <text x={612} y={292} textAnchor="end" className="dw-text">- - V   ━ I</text>
     </svg>
   );
 }

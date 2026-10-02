@@ -6,7 +6,7 @@
  * Any field marked `confirm: true` (or any string listed in a `confirm`
  * array) is a draft written from the project brief and must be checked
  * against the CV / ZEROOZEN materials before launch. While
- * SHOW_CONFIRM_MARKS is true, those items render with a small orange
+ * SHOW_CONFIRM_MARKS is true, those items render with a small dashed
  * "to confirm" tag so nothing unverified ships by accident.
  */
 
@@ -61,22 +61,42 @@ export const method = {
     "See the reality. Understand the problem. Decide what matters. Build it. Put it in people’s hands. Make the system work.",
 };
 
-export type Stage = { label: string; body: string; confirm?: boolean };
+/* Each project is told in the order it happened, from someone's working
+ * day to something running in the field:
+ *
+ *   REALITY → NEED → CUSTOMER → INSIGHT → DECISION → STRATEGY →
+ *   TECHNOLOGY → DEPLOYMENT → ADOPTION → LEARNING
+ *
+ * On the page those ten beats are grouped under four panels, the site's
+ * signature device: REALITY → DECISION → BUILD → FIELD. Technology shows
+ * up as the response to a need, never as the opening line. */
+
+export type Beat = { body: string; confirm?: boolean };
 export type Figure = { value: string; label: string; confirm?: boolean };
 
 export type Project = {
   id: string;
   index: string;
   name: string;
-  kind: string;
   date: string;
-  summary: string;
+  /* Opening line of the story: the reality, in plain words. */
+  opening: string;
+  /* The question that drove the decision. Shown large in the DECISION panel. */
+  question: string;
   diagram: "vehicle" | "pack" | "charger" | "drivecycle";
-  plate: Plate;
+  realityPlate: Plate;
+  fieldPlate: Plate;
   figures: Figure[];
-  stages: Stage[];
-  highlights: string[];
-  disciplines: string[];
+  reality: Beat;
+  need: Beat;
+  customer: Beat;
+  insight: Beat;
+  decision: Beat;
+  strategy: Beat;
+  technology: Beat;
+  deployment: Beat;
+  adoption: Beat;
+  learning: Beat;
 };
 
 export const projects: Project[] = [
@@ -84,207 +104,225 @@ export const projects: Project[] = [
     id: "zengo-alfa",
     index: "01",
     name: "ZENGO ALFA",
-    kind: "Electric three-wheeler platform",
     date: "Launched Sep 2025",
-    summary:
-      "A Li-ion electric three-wheeler, optimized for rural and urban Bangladesh and built around real operating conditions, customer needs, vehicle economics and practical deployment.",
+    opening:
+      "Three-wheelers move people and goods across rural and urban Bangladesh every day, on roads and loads that imported designs were not built around.",
+    question: "What does this vehicle have to do for its driver to earn a living from it?",
     diagram: "vehicle",
-    plate: {
+    realityPlate: {
       src: null,
-      alt: "ZENGO ALFA in field operation",
-      caption: "Field photo: ZENGO ALFA in daily operation",
+      alt: "A three-wheeler driver at work on a Bangladeshi road",
+      caption: "Reality: a driver’s working day",
+    },
+    fieldPlate: {
+      src: null,
+      alt: "ZENGO ALFA in commercial operation",
+      caption: "Field: ZENGO ALFA in operation",
     },
     figures: [
       { value: "2.8 lakh+ km", label: "in field operation" },
-      { value: "BDT 3.5M+", label: "revenue, first quarter after launch" },
-      { value: "+20%", label: "payload capacity", confirm: true },
+      { value: "BDT 3.5M+", label: "revenue in the first quarter after launch" },
     ],
-    stages: [
-      {
-        label: "The Reality",
-        body: "Electric three-wheelers in Bangladesh were being designed and judged on foreign assumptions about range, load and energy use, not on the roads and duty cycles they actually face.",
-      },
-      {
-        label: "The Insight",
-        body: "The vehicle has to be engineered from local operating problems and the owner’s economics outward. That needs a local model of the vehicle, not a borrowed one.",
-      },
-      {
-        label: "The Bet",
-        body: "Build a mathematical powertrain and drivetrain model first, use it to optimize a platform for local use, and own the path to commercial deployment rather than stopping at a prototype.",
-      },
-      {
-        label: "The Build",
-        body: "A powertrain and drivetrain model that computes range, depth of discharge and energy per kilometre; optimized chassis; battery and motor integration; dual-lock security; integrated GPS with remote on/off and live connectivity.",
-      },
-      {
-        label: "The Result",
-        body: "Launched in September 2025 and commercialized. More than 2.8 lakh km in field operation and over BDT 3.5M in revenue in the first quarter after launch. The architecture is the base for future commercial and passenger platforms.",
-      },
-    ],
-    highlights: [
-      "Identifying local mobility and operating problems",
-      "Powertrain and drivetrain modeling",
-      "Vehicle architecture and optimization",
-      "Integrated electronics, GPS and connectivity",
-      "Commercialization and deployment",
-      "Field validation and customer adoption",
-    ],
-    disciplines: ["Field research", "Vehicle engineering", "Product strategy", "Commercialization"],
+    reality: {
+      body: "Range, depth of discharge and energy per kilometre were being estimated from foreign assumptions, not from how these vehicles are actually driven here.",
+    },
+    need: {
+      body: "A vehicle whose range, payload and running cost hold up under local operating conditions.",
+    },
+    customer: {
+      body: "Drivers and operators who earn from the vehicle every day, for whom a range shortfall or a day off the road is lost income.",
+      confirm: true,
+    },
+    insight: {
+      body: "The vehicle could not be optimized for Bangladesh until its core numbers were computed for Bangladesh.",
+    },
+    decision: {
+      body: "Build our own powertrain and drivetrain model first, then design the vehicle from its outputs instead of adapting an existing platform.",
+    },
+    strategy: {
+      body: "Treat it as a platform: connected from launch, with an electrical architecture that can grow into commercial and passenger variants.",
+    },
+    technology: {
+      body: "I built the mathematical powertrain and drivetrain model that computes range, depth of discharge and energy per kilometre. Its outputs shaped an optimized chassis, matched battery and motor integration, dual-lock security, and integrated GPS with remote on/off and live connectivity.",
+    },
+    deployment: {
+      body: "Launched commercially in September 2025, with live GPS tracking built in from the first vehicle.",
+      confirm: true,
+    },
+    adoption: {
+      body: "More than 2.8 lakh km in field operation, and over BDT 3.5M in revenue in the first quarter after launch.",
+    },
+    learning: {
+      body: "The architecture is now the base for the next generation of dual-purpose commercial and passenger platforms.",
+    },
   },
   {
     id: "zenpack",
     index: "02",
     name: "ZenPack",
-    kind: "LFP battery platform",
     date: "In deployment",
-    summary:
-      "A domestically engineered LFP battery pack, designed around the realities of Bangladesh’s electric mobility ecosystem.",
+    opening:
+      "Electric three-wheelers in Bangladesh were running on batteries specified for other markets and other duty cycles.",
+    question: "What does this battery need to do for its owner to make economic sense?",
     diagram: "pack",
-    plate: {
+    realityPlate: {
       src: null,
-      alt: "ZenPack battery module on the workshop bench",
-      caption: "Workshop photo: ZenPack module and BMS",
+      alt: "A battery being serviced in a local garage",
+      caption: "Reality: batteries in a local garage",
+    },
+    fieldPlate: {
+      src: null,
+      alt: "A ZenPack installed in a working vehicle",
+      caption: "Field: ZenPack in a working vehicle",
     },
     figures: [
       { value: "1.2 lakh km", label: "of validation testing" },
-      { value: "20+", label: "units delivered in two months" },
-      { value: "250+", label: "units targeted by end of 2026" },
+      { value: "20+", label: "units delivered in the first two months" },
+      { value: "250+", label: "units targeted by the end of 2026" },
     ],
-    stages: [
-      {
-        label: "The Reality",
-        body: "Local operators depend on batteries that were not specified for how their vehicles are driven, charged and maintained here.",
-        confirm: true,
-      },
-      {
-        label: "The Insight",
-        body: "A good pack starts as a list of field requirements, not a cell datasheet. The specification has to come from how vehicles are actually used.",
-      },
-      {
-        label: "The Bet",
-        body: "Engineer the pack domestically, validate it against a local driving cycle, and build the supply chain and operating system around it, because a pack without that system does not last in the field.",
-      },
-      {
-        label: "The Build",
-        body: "Turned field requirements into product specifications, defined the pack architecture and BMS requirements, and validated the design through ZEROOZEN’s own drive cycle across 1.2 lakh km of testing.",
-      },
-      {
-        label: "The Result",
-        body: "More than 20 units delivered to vehicles and customers within two months, growing 6.5% month on month, with a target of over 250 units by the end of 2026. A hybrid master-slave ZEN BMS is in development.",
-      },
-    ],
-    highlights: [
-      "Understanding local battery pain points",
-      "Translating field requirements into product specifications",
-      "Battery architecture and BMS requirements",
-      "Validation using real-world driving data",
-      "Deployment to actual vehicles and customers",
-      "Building the surrounding supply and operating system",
-    ],
-    disciplines: ["Customer research", "Battery systems", "Supply chain", "Operations"],
+    reality: {
+      body: "The battery decides whether an electric three-wheeler earns money. Most packs on the road were not designed around local conditions.",
+      confirm: true,
+    },
+    need: {
+      body: "A pack whose life, cost and reliability make sense for a vehicle that has to work every day.",
+    },
+    customer: {
+      body: "Owners and operators of electric three-wheelers.",
+    },
+    insight: {
+      body: "A cell datasheet can’t say how a pack will be used here. A local driving cycle can, so the specification had to start there.",
+    },
+    decision: {
+      body: "Engineer the pack domestically, and validate it against our own drive cycle instead of a foreign standard.",
+    },
+    strategy: {
+      body: "Build the supply chain with the product: global sourcing integrated with local manufacturing, aiming for at least a 20% reduction in unit cost.",
+    },
+    technology: {
+      body: "I turned field requirements into the product specification, the LFP pack architecture and the BMS requirements, then validated the design over 1.2 lakh km of testing on our proprietary drive cycle.",
+    },
+    deployment: {
+      body: "Delivered to real vehicles and customers: more than 20 units within the first two months.",
+    },
+    adoption: {
+      body: "Deliveries are growing 6.5% month on month, with a target of over 250 units by the end of 2026.",
+    },
+    learning: {
+      body: "The next layer is our own BMS: ZEN BMS, a hybrid master-slave design with active and passive balancing, now in development.",
+    },
   },
   {
     id: "zen-charger",
     index: "03",
     name: "ZEN Series Charger",
-    kind: "Intelligent EV charger",
     date: "23 prototype iterations",
-    summary:
-      "A 1.2 kW intelligent charger for e-rickshaw packs, taken from engineering problem identification through to a physical product in the field.",
+    opening:
+      "For a three-wheeler driver, the charger is part of the working day. For a garage owner, it is part of the electricity bill.",
+    question: "What should charging cost a driver in power, compatibility and battery life?",
     diagram: "charger",
-    plate: {
+    realityPlate: {
       src: null,
-      alt: "ZEN Series Charger PCB during prototyping",
-      caption: "Bench photo: charger PCB, prototype revision",
+      alt: "Vehicles charging overnight in a garage",
+      caption: "Reality: overnight charging in a garage",
+    },
+    fieldPlate: {
+      src: null,
+      alt: "ZEN Series Charger connected to a vehicle",
+      caption: "Field: ZEN Series Charger in use",
     },
     figures: [
-      { value: "1.2 kW", label: "half-bridge resonant DC-DC" },
-      { value: "48 / 60 V", label: "Li-ion and lead-acid packs" },
       { value: "87%", label: "efficiency at peak load" },
+      { value: "48 / 60 V", label: "lithium-ion and lead-acid packs" },
       { value: "23", label: "prototype iterations" },
     ],
-    stages: [
-      {
-        label: "The Reality",
-        body: "Operators charge a mix of lithium-ion and lead-acid packs at 48 V and 60 V, and the chargers in common use handled neither efficiency nor battery health well.",
-        confirm: true,
-      },
-      {
-        label: "The Insight",
-        body: "A charger is part of the battery’s life, not an accessory. Efficiency, compatibility across chemistries and battery care are the value proposition.",
-      },
-      {
-        label: "The Bet",
-        body: "Design one universal charger in-house around that value proposition, instead of sourcing a generic unit per pack type.",
-      },
-      {
-        label: "The Build",
-        body: "Half-bridge resonant power stage with an input EMI filter; four-stage charging (pre-charge, CC, CV, float); short-circuit, overcharge and reverse-polarity protection. Full PCB layout and embedded C/C++ firmware, simulated in LTspice, PLECS and Simulink.",
-      },
-      {
-        label: "The Result",
-        body: "23 prototype iterations to a field-ready design with 87% efficiency at peak load. The hardware standards and sourcing processes set here became the base for later ZEROOZEN product lines.",
-      },
-    ],
-    highlights: [
-      "Identifying inefficiencies in existing charging solutions",
-      "Value proposition around efficiency, compatibility and battery care",
-      "Power-electronics architecture",
-      "PCB design and embedded firmware",
-      "Simulation and iterative prototyping",
-      "Field validation and commercialization",
-    ],
-    disciplines: ["Power electronics", "Embedded systems", "Product definition", "Commercialization"],
+    reality: {
+      body: "Drivers and garages charge a mix of lithium-ion and lead-acid packs at 48 V and 60 V, with chargers that waste power and wear batteries out.",
+      confirm: true,
+    },
+    need: {
+      body: "A charger that wastes less electricity, works with the packs people already own, and doesn’t shorten battery life.",
+    },
+    customer: {
+      body: "Three-wheeler drivers and garage owners.",
+    },
+    insight: {
+      body: "Efficiency, compatibility and battery care only create value together. A charger that is good at one of them still costs the owner on the others.",
+    },
+    decision: {
+      body: "Design one universal charger for both chemistries and both voltages, instead of a unit per pack type.",
+    },
+    strategy: {
+      body: "Develop it in-house, so the hardware standards and sourcing processes built for it could carry over to later products.",
+    },
+    technology: {
+      body: "Then I worked backward into the electronics: a 1.2 kW half-bridge resonant converter with an input EMI filter, a four-stage charging algorithm (pre-charge, CC, CV, float), and short-circuit, overcharge and reverse-polarity protection. I did the PCB layout and C/C++ firmware, and simulated it in LTspice, PLECS and Simulink.",
+    },
+    deployment: {
+      body: "23 prototype iterations to a design that was field-validated and commercialized.",
+    },
+    adoption: {
+      body: "87% efficiency at peak load, with charging tuned to slow battery degradation.",
+    },
+    learning: {
+      body: "The hardware design standards and component sourcing set up for the charger became the foundation for every later ZEROOZEN product line.",
+    },
   },
   {
     id: "zenbox",
     index: "04",
     name: "ZENBOX + Dhaka Urban Drive Cycle",
-    kind: "Vehicle intelligence and local engineering data",
     date: "Mirpur, Dhaka",
-    summary:
-      "A systems-level project combining low-cost vehicle intelligence with locally relevant engineering data.",
+    opening:
+      "Vehicles and batteries for Dhaka were being sized against NEDC and WLTC, drive cycles built on roads, traffic and climate that look nothing like Dhaka’s.",
+    question: "How do you size a vehicle for Dhaka when no drive cycle describes Dhaka?",
     diagram: "drivecycle",
-    plate: {
+    realityPlate: {
       src: null,
-      alt: "ZENBOX telematics unit installed in a vehicle",
-      caption: "Install photo: ZENBOX logger in a vehicle",
+      alt: "Stop-start traffic in Mirpur, Dhaka",
+      caption: "Reality: stop-start traffic in Mirpur",
+    },
+    fieldPlate: {
+      src: null,
+      alt: "ZENBOX installed on a vehicle",
+      caption: "Field: ZENBOX logging on a vehicle",
     },
     figures: [
-      { value: "1 Hz", label: "RPM logging, non-contact" },
-      { value: "~90%", label: "lower unit cost than OBD loggers" },
+      { value: "~90%", label: "lower unit cost than commercial OBD loggers" },
+      { value: "1 Hz", label: "non-contact RPM logging" },
       { value: "95%", label: "data efficiency", confirm: true },
     ],
-    stages: [
-      {
-        label: "The Reality",
-        body: "Bangladesh had no drive cycle of its own. Vehicles and batteries were sized on NEDC and WLTC, which describe roads, traffic and stop-start behaviour that have little to do with Dhaka.",
-      },
-      {
-        label: "The Insight",
-        body: "Without local operating data, every downstream decision (range, pack size, motor sizing) inherits the wrong baseline. And commercial loggers cost too much to put on a fleet of small vehicles.",
-      },
-      {
-        label: "The Bet",
-        body: "Build a logger cheap enough to ride on real vehicles, collect the data directly, and turn it into a local drive-cycle baseline.",
-      },
-      {
-        label: "The Build",
-        body: "ZENBOX: a high-frequency laser sensor over a 32-tooth gear, working as a non-contact light-gate tachometer. Then the Dhaka Urban Drive Cycle, captured in Mirpur from real traffic, road, climate and stop-start conditions.",
-      },
-      {
-        label: "The Result",
-        body: "The drive cycle is now ZEROOZEN’s engineering baseline for vehicle performance evaluation, battery pack sizing and range estimation, and the reference for future regulatory submissions.",
-      },
-    ],
-    highlights: [
-      "Gap between global assumptions and Bangladesh’s road conditions",
-      "Collecting real-world operating data",
-      "Developing a local drive-cycle baseline",
-      "ZENBOX as a low-cost telematics / data acquisition system",
-      "Intelligence for vehicle design, battery sizing and fleet decisions",
-    ],
-    disciplines: ["Systems thinking", "Embedded hardware", "Data analysis", "Fleet strategy"],
+    reality: {
+      body: "Bangladesh had no drive cycle of its own, so every estimate of range, pack size and motor size inherited someone else’s roads.",
+    },
+    need: {
+      body: "Real operating data from real vehicles, collected at a cost a fleet of small vehicles could carry.",
+    },
+    customer: {
+      body: "Our own engineering team first, then operators of light electric vehicles who need fleet telematics they can afford.",
+    },
+    insight: {
+      body: "Commercial OBD loggers cost too much for light vehicles. The signal that mattered could be measured another way.",
+    },
+    decision: {
+      body: "Build our own logger, and build Bangladesh’s first urban drive cycle from what it records.",
+    },
+    strategy: {
+      body: "Start in one dense area, Mirpur, and make the result the baseline that vehicle design, battery sizing and regulatory work all refer to.",
+    },
+    technology: {
+      body: "ZENBOX puts a high-frequency laser over a 32-tooth gear as a non-contact light-gate tachometer, logging RPM at 1 Hz without touching the drivetrain. I captured Mirpur’s operating conditions (density, traffic, climate, road infrastructure and stop-start behaviour) and built the drive cycle from them.",
+    },
+    deployment: {
+      body: "ZENBOX logs on vehicles at roughly 90% lower unit cost than commercial OBD loggers.",
+    },
+    adoption: {
+      body: "The Dhaka Urban Drive Cycle is now ZEROOZEN’s engineering baseline for vehicle performance evaluation, battery pack sizing and range estimation.",
+    },
+    learning: {
+      body: "Local data changed how we specify products. The cycle is also the reference for future regulatory submissions.",
+      confirm: true,
+    },
   },
 ];
 

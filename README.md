@@ -20,7 +20,7 @@ All copy is in `src/content/site.ts`: hero, operating model, the four projects
 (Reality → Insight → Bet → Build → Result), About, experience, recognition and contact.
 
 Figures come from Sanjid's CV (October 2026). Anything not backed by his materials is
-marked `confirm: true` and shows an orange **to confirm** tag on the page. Once everything
+marked `confirm: true` and shows a dashed **to confirm** tag on the page. Once everything
 is checked, set `SHOW_CONFIRM_MARKS = false` at the top of the file.
 
 ## Adding photos
@@ -28,7 +28,7 @@ is checked, set `SHOW_CONFIRM_MARKS = false` at the top of the file.
 Each project and the About section show a hatched placeholder that names the file it
 expects, for example `public/images/zengo-alfa/photo.jpg`. Drop the image there and set the
 matching `plate.src` in `site.ts` to `/images/zengo-alfa/photo.jpg`. Photos render in
-greyscale and warm slightly on hover.
+greyscale, to keep the site black and white.
 
 ## Contact form
 
