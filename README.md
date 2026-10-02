@@ -16,8 +16,13 @@ npm run preview   # serve the built site
 
 ## Editing content
 
-All copy is in `src/content/site.ts`: hero, operating model, the four projects
-(Reality → Insight → Bet → Build → Result), About, experience, recognition and contact.
+All copy is in `src/content/site.ts`: hero, current work, the four projects, how I work,
+systems I work across, About, experience, recognition and contact.
+
+Projects are told as a chain of reasoning under four panels: Reality → Decision → Build →
+Field. Technology is explained in layers (the idea, the system, technical depth, user value,
+field proof), and every metric carries the reason it matters. Raw specs sit in a small
+spec sheet under each schematic.
 
 Figures come from Sanjid's CV (October 2026). Anything not backed by his materials is
 marked `confirm: true` and shows a dashed **to confirm** tag on the page. Once everything

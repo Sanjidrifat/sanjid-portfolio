@@ -1,16 +1,17 @@
 import { useEffect, useRef, useState, type FormEvent, type ReactNode } from "react";
 import {
   about,
-  alsoBuilding,
   contact,
+  currentWork,
   experience,
   hero,
-  method,
   person,
+  philosophy,
   projects,
   recognition,
-  type Beat,
+  systems,
   type Project,
+  type Text,
 } from "./content/site";
 import { Diagram } from "./components/Diagrams";
 import { Confirm, DiagramPlate, Photo, TitleBlock } from "./components/Parts";
@@ -34,8 +35,9 @@ function TopBar() {
           <b>{person.name}</b>
         </a>
         <nav className="nav mono" aria-label="Sections">
-          <a href="#method">How I work</a>
           <a href="#work">Work</a>
+          <a href="#method">How I work</a>
+          <a href="#systems">Systems</a>
           <a href="#about">About</a>
           <a href="#contact">Contact</a>
         </nav>
@@ -77,20 +79,6 @@ function Hero() {
             </a>
           </div>
         </div>
-        <div className="ledger rise" style={{ animationDelay: "0.5s" }}>
-          <div>
-            <span className="mono mute">Now</span>
-            <span className="v">Co-Founder & CPO, ZEROOZEN Energy</span>
-          </div>
-          <div>
-            <span className="mono mute">In the field</span>
-            <span className="v">400+ light EVs under active fleet management</span>
-          </div>
-          <div>
-            <span className="mono mute">Based in</span>
-            <span className="v">{person.location}</span>
-          </div>
-        </div>
       </div>
     </section>
   );
@@ -108,53 +96,47 @@ function Thesis() {
   );
 }
 
-function Method() {
+function CurrentWork() {
   return (
-    <section className="section" id="method">
+    <section className="section" id="now">
       <div className="wrap">
-        <TitleBlock sheet="01" name="Operating model" refCode="SHAR-01 · Rev A" />
-        <div className="method-head">
-          <h2 className="display h2">{method.title}</h2>
-          <p>{method.lede}</p>
+        <TitleBlock sheet="01" name="ZEROOZEN Energy" refCode="SHAR-01 · Rev C" />
+        <div className="now-head">
+          <h2 className="display h2">{currentWork.title}</h2>
+          <p className="now-lede">{currentWork.lede}</p>
         </div>
-        <ol className="loop" style={{ listStyle: "none", margin: 0, padding: 0 }}>
-          {method.steps.map((s, i) => (
-            <li className="station" key={s.key}>
-              <div className="n mono">
-                <span>{String(i + 1).padStart(2, "0")}</span>
-                <span>{i < method.steps.length - 1 ? "→" : "↺"}</span>
-              </div>
-              <h3>{s.key}</h3>
-              <p>{s.line}</p>
+        <ol className="layers" style={{ listStyle: "none", padding: 0, margin: 0 }}>
+          {currentWork.layers.map((l, i) => (
+            <li className="layer" key={l.name}>
+              <span className="mono mute">{String(i + 1).padStart(2, "0")}</span>
+              <b>{l.name}</b>
+              <p>{l.line}</p>
             </li>
           ))}
         </ol>
-        <div className="loop-return mono mute">
-          <span>Learn</span>
-          <span className="line" />
-          <span>back to Reality</span>
-        </div>
-        <p className="closing">{method.closing}</p>
+        <p className="now-note">{currentWork.note}</p>
       </div>
     </section>
   );
 }
 
-const PANELS = ["Reality", "Decision", "Build", "Field"] as const;
-
-function Beats({ items }: { items: [string, Beat][] }) {
+function Txt({ t }: { t: Text }) {
   return (
-    <dl className="beats">
-      {items.map(([label, b]) => (
-        <div className="beat" key={label}>
-          <dt className="mono mute">{label}</dt>
-          <dd>
-            {b.body}
-            <Confirm show={b.confirm} />
-          </dd>
-        </div>
-      ))}
-    </dl>
+    <>
+      {t.body}
+      <Confirm show={t.confirm} />
+    </>
+  );
+}
+
+function Layer({ n, label, children }: { n: number; label: string; children: ReactNode }) {
+  return (
+    <div className="lyr">
+      <span className="mono mute">
+        {n} · {label}
+      </span>
+      <div className="lyr-body">{children}</div>
+    </div>
   );
 }
 
@@ -181,6 +163,8 @@ function Panel({
   );
 }
 
+const PANELS = ["Reality", "Decision", "Build", "Field"] as const;
+
 function ProjectBlock({ p }: { p: Project }) {
   const [main, sub] = p.name.split(" + ");
   return (
@@ -190,28 +174,29 @@ function ProjectBlock({ p }: { p: Project }) {
           {p.index} / {String(projects.length).padStart(2, "0")}
         </span>
         <div>
-          <h3 className="display project-name">
-            {main}
-            {sub && <small>+ {sub}</small>}
-          </h3>
           <div className="project-meta mono mute">
+            <span>
+              {main}
+              {sub && ` + ${sub}`}
+            </span>
             <span>{p.date}</span>
             <span>ZEROOZEN Energy</span>
           </div>
-          <p className="project-opening">{p.opening}</p>
+          <h3 className="display project-thesis">{p.thesis}</h3>
         </div>
       </div>
 
       <div className="panels">
         <Panel name="Reality" visual={<Photo plate={p.realityPlate} path={`/images/${p.id}/reality.jpg`} />}>
-          <Beats
-            items={[
-              ["Reality", p.reality],
-              ["Need", p.need],
-              ["Customer", p.customer],
-            ]}
-          />
+          <div className="prose">
+            {p.context.map((t, i) => (
+              <p key={i}>
+                <Txt t={t} />
+              </p>
+            ))}
+          </div>
         </Panel>
+
         <Panel
           name="Decision"
           visual={
@@ -221,37 +206,77 @@ function ProjectBlock({ p }: { p: Project }) {
             </div>
           }
         >
-          <Beats
-            items={[
-              ["Insight", p.insight],
-              ["Decision", p.decision],
-              ["Strategy", p.strategy],
-            ]}
-          />
+          <div className="prose">
+            <p>
+              <Txt t={p.belief} />
+            </p>
+          </div>
+          <Layer n={1} label="The idea">
+            <p className="idea">
+              <Txt t={p.idea} />
+            </p>
+          </Layer>
         </Panel>
+
         <Panel
           name="Build"
           visual={
-            <DiagramPlate caption={`Fig. ${p.index} · schematic`} code={`SHAR-${p.index}-D`}>
-              <Diagram kind={p.diagram} />
-            </DiagramPlate>
+            <div className="build-visual">
+              <DiagramPlate caption={`Fig. ${p.index} · schematic`} code={`SHAR-${p.index}-D`}>
+                <Diagram kind={p.diagram} />
+              </DiagramPlate>
+              <div className="specsheet">
+                <span className="mono mute">Spec sheet</span>
+                <ul className="mono">
+                  {p.specs.map((s) => (
+                    <li key={s}>{s}</li>
+                  ))}
+                </ul>
+              </div>
+            </div>
           }
         >
-          <Beats items={[["Technology", p.technology]]} />
+          <Layer n={2} label="The system">
+            <ol className="chain mono" style={{ listStyle: "none", padding: 0 }}>
+              {p.chain.map((c, i) => (
+                <li key={c}>
+                  {c}
+                  {i < p.chain.length - 1 && <span className="mute"> → </span>}
+                </li>
+              ))}
+            </ol>
+            <p>
+              <Txt t={p.system} />
+            </p>
+          </Layer>
+          <Layer n={3} label="Technical depth: why it is built this way">
+            <dl className="choices">
+              {p.depth.map((c) => (
+                <div className="choice" key={c.title}>
+                  <dt>{c.title}</dt>
+                  <dd>
+                    {c.why}
+                    <Confirm show={c.confirm} />
+                  </dd>
+                </div>
+              ))}
+            </dl>
+          </Layer>
         </Panel>
+
         <Panel
           name="Field"
           last
           visual={
             <div className="field-visual">
               <Photo plate={p.fieldPlate} path={`/images/${p.id}/field.jpg`} />
-              <div className="specs">
-                {p.figures.map((f) => (
-                  <div className="spec" key={f.label}>
-                    <span className="v">{f.value}</span>
-                    <span className="l">
-                      {f.label}
-                      <Confirm show={f.confirm} />
+              <div className="evidence">
+                {p.evidence.map((e) => (
+                  <div className="ev" key={e.value}>
+                    <span className="v">{e.value}</span>
+                    <span className="b">
+                      {e.because}
+                      <Confirm show={e.confirm} />
                     </span>
                   </div>
                 ))}
@@ -259,13 +284,17 @@ function ProjectBlock({ p }: { p: Project }) {
             </div>
           }
         >
-          <Beats
-            items={[
-              ["Deployment", p.deployment],
-              ["Adoption", p.adoption],
-              ["Learning", p.learning],
-            ]}
-          />
+          <Layer n={4} label="The user value">
+            <p>
+              <Txt t={p.value} />
+            </p>
+          </Layer>
+          <Layer n={5} label="The field proof">
+            <p>
+              <Txt t={p.proof} />
+            </p>
+          </Layer>
+          <blockquote className="reflection">{p.reflection}</blockquote>
         </Panel>
       </div>
     </article>
@@ -276,11 +305,11 @@ function Work() {
   return (
     <section className="section" id="work">
       <div className="wrap">
-        <TitleBlock sheet="02" name="Selected work" refCode="SHAR-02 · Rev B" />
+        <TitleBlock sheet="02" name="Selected work" refCode="SHAR-02 · Rev C" />
         <h2 className="display h2">Selected work</h2>
         <p className="work-intro">
-          Each of these started with someone’s working day and ended with something running in the field. They read in
-          the order they happened.
+          Each of these began with something happening in the real world, and each product is a consequence of a chain of
+          reasoning about it. They read in that order: reality, decision, build, field.
         </p>
 
         <ol className="cards" style={{ listStyle: "none", padding: 0 }}>
@@ -289,7 +318,7 @@ function Work() {
               <a className="card" href={`#${p.id}`}>
                 <span className="mono mute">{p.index}</span>
                 <b>{p.name}</b>
-                <span className="card-q">{p.question}</span>
+                <span className="card-q">{p.thesis}</span>
                 <span className="card-track mono mute">
                   {PANELS.map((s, i) => (
                     <span key={s}>
@@ -306,21 +335,39 @@ function Work() {
         {projects.map((p) => (
           <ProjectBlock key={p.id} p={p} />
         ))}
+      </div>
+    </section>
+  );
+}
 
-        <div className="also">
-          <div className="titleblock mono" style={{ marginBottom: 24 }}>
-            <span className="accent">Also</span>
-            <span className="name">Around the system</span>
-            <span className="ref mute">SHAR-02-X</span>
-          </div>
-          {alsoBuilding.map((a) => (
-            <div className="also-row" key={a.name}>
-              <b>{a.name}</b>
-              <p>{a.line}</p>
-              <span className="mono mute">
-                {a.status}
-                <Confirm show={a.confirm} />
-              </span>
+function HowIWork() {
+  return (
+    <section className="section" id="method">
+      <div className="wrap">
+        <TitleBlock sheet="03" name="Operating philosophy" refCode="SHAR-03 · Rev C" />
+        <h2 className="display h2">{philosophy.title}</h2>
+        <div className="creed">
+          {philosophy.lines.map((l) => (
+            <p key={l}>{l}</p>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function Systems() {
+  return (
+    <section className="section" id="systems">
+      <div className="wrap">
+        <TitleBlock sheet="04" name="Systems I work across" refCode="SHAR-04 · Rev C" />
+        <h2 className="display h2">Systems I work across</h2>
+        <div className="systems">
+          {systems.map((s) => (
+            <div className="sys" key={s.name}>
+              <h3 className="display">{s.name}</h3>
+              <span className="mono mute">{s.scope}</span>
+              <p>{s.work}</p>
             </div>
           ))}
         </div>
@@ -333,16 +380,13 @@ function About() {
   return (
     <section className="section" id="about">
       <div className="wrap">
-        <TitleBlock sheet="03" name="About" refCode="SHAR-03 · Rev A" />
+        <TitleBlock sheet="05" name="About" refCode="SHAR-05 · Rev C" />
         <div className="about-grid">
           <Photo plate={about.portrait} path="/images/portrait.jpg" tall />
           <div className="about-copy">
             <h2 className="display h2">About</h2>
-            {about.paragraphs.map((t, i) => (
-              <p key={i}>
-                {t}
-                <Confirm show={about.confirmParagraphs.includes(i)} />
-              </p>
+            {about.paragraphs.map((t) => (
+              <p key={t}>{t}</p>
             ))}
           </div>
         </div>
@@ -351,7 +395,7 @@ function About() {
           <div className="titleblock mono" style={{ marginBottom: 0, borderBottom: 0 }}>
             <span className="accent">Record</span>
             <span className="name">Experience and education</span>
-            <span className="ref mute">SHAR-03-R</span>
+            <span className="ref mute">SHAR-05-R</span>
           </div>
           <div className="rows">
             {experience.map((r) => (
@@ -374,7 +418,7 @@ function About() {
           <div className="titleblock mono" style={{ marginBottom: 0, borderBottom: 0 }}>
             <span className="accent">Recognition</span>
             <span className="name">Programs and features</span>
-            <span className="ref mute">SHAR-03-H</span>
+            <span className="ref mute">SHAR-05-H</span>
           </div>
           <div className="rows">
             {recognition.map((h) => (
@@ -439,7 +483,7 @@ function Contact() {
   return (
     <section className="section contact" id="contact">
       <div className="wrap">
-        <TitleBlock sheet="04" name="Contact" refCode="SHAR-04 · Rev A" />
+        <TitleBlock sheet="06" name="Contact" refCode="SHAR-06 · Rev C" />
         <div className="contact-grid">
           <div>
             <h2 className="display">{contact.heading}</h2>
@@ -499,8 +543,10 @@ export default function App() {
       <main>
         <Hero />
         <Thesis />
-        <Method />
+        <CurrentWork />
         <Work />
+        <HowIWork />
+        <Systems />
         <About />
         <Contact />
       </main>
