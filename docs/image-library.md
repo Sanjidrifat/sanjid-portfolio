@@ -1,6 +1,6 @@
 # Image library
 
-Sixteen photos Sanjid shared on 3 October 2026, catalogued for the website. Facts about each photo come from three places only: what is visible, Sanjid's own file name, and the camera date stored in the file. Anything else is marked uncertain. The machine-readable version is `src/content/image-library.json`, built by `scripts/image_library.py`. Web copies (max 1600 px) are in `public/images/library/`. The originals are untouched in the project uploads.
+Eighteen photos Sanjid shared on 3 October 2026 (sixteen, then two from the MenuKi pilot), catalogued for the website. Facts about each photo come from three places only: what is visible, Sanjid's own file name, and the camera date stored in the file. Anything else is marked uncertain. The machine-readable version is `src/content/image-library.json`, built by `scripts/image_library.py`. Web copies (max 1600 px) are in `public/images/library/`. The originals are untouched in the project uploads.
 
 ## Where each photo is used
 
@@ -9,6 +9,7 @@ Sixteen photos Sanjid shared on 3 October 2026, catalogued for the website. Fact
 | Home, under the greeting | figuring-it-out | The opening line made literal. Sanjid's own caption for it is about trying to figure something out. |
 | About, top | emk-center | The clearest picture of his face, so a first-time visitor knows who they are reading about. |
 | About, after university | convocation-2025 | Closes the AUST chapter. |
+| About, after MenuKi | menuki-salt-and-pepper | The first customer of something he co-founded, before ZEROOZEN. |
 | About, after joining ZEROOZEN | thingspeak-desk | The start of the ZEROOZEN years. Hardware and data on one desk. |
 | About, under Recognition | orange-corners-certificate | Evidence for the Orange Corners line, kept small. |
 | Work, top | shariful-garage | The world the work is for. A real garage, real vehicles, the first partner. |
@@ -18,6 +19,7 @@ Sixteen photos Sanjid shared on 3 October 2026, catalogued for the website. Fact
 | Life | friends-bonfire, cycle-village-road, cycle-dawn-road, candid-bw, cycle-mustard-field | Friends, riding, a quiet moment. No products. |
 | Now | cells-on-bench-2026 | The most recent photo, and Now is about batteries. |
 | Not used | bicycle-night-street | Same theme as the dawn road photo but low resolution. |
+| Not used yet | menuki-table-card | Good detail, but About already has the handover from the same evening. |
 
 No photo is used twice. The project stories keep the order reality, build, deployment where a photo exists for each step. Placeholders stay where nothing real exists yet.
 
@@ -29,7 +31,7 @@ No photo is used twice. The project stories keep the order reality, build, deplo
 
 **Engineering and build:** figuring-it-out, thingspeak-desk, cells-on-bench-2026. Only three. Nothing yet from ZENBOX, the drive cycle work, or the charger prototypes on a bench.
 
-**Customer and adoption:** shariful-garage. Only one. ZenWall on a brick wall may be a customer site, but the photo does not say.
+**Customer and adoption:** shariful-garage, menuki-salt-and-pepper, menuki-table-card. Only three. ZenWall on a brick wall may be a customer site, but the photo does not say.
 
 **Product:** zenwall-first-version, meet-bangladesh-expo, zengo-alfa-first-lot. No ZenPack or ZENBOX photo.
 
@@ -50,15 +52,15 @@ No photo is used twice. The project stories keep the order reality, build, deplo
 
 ## Sequences
 
-By camera date the photos form one timeline: July and December 2017 riding, November 2023 the ThingSpeak desk, March 2024 the first ZenWall chargers on a wall, April 2024 the first garage partner, May 2024 the circuit board, August 2024 Orange Corners, May 2025 convocation, September 2025 the first ZENGO ALFA lot, April 2026 the cells on the bench.
+By camera date the photos form one timeline: July and December 2017 riding, October 2023 the MenuKi pilot, November 2023 the ThingSpeak desk, March 2024 the first ZenWall chargers on a wall, April 2024 the first garage partner, May 2024 the circuit board, August 2024 Orange Corners, May 2025 convocation, September 2025 the first ZENGO ALFA lot, April 2026 the cells on the bench.
 
 The charger has the most complete sequence: build (circuit board, May 2024, only if that board is a charger), product on a wall (March 2024), product line in public (expo). It is missing the reality step, a charger in use at a garage.
 
 ## Collections
-
 - **sanjid_identity**: emk-center, figuring-it-out, candid-bw, thingspeak-desk, cells-on-bench-2026
 - **field_reality**: shariful-garage, zengo-alfa-first-lot, cycle-village-road
-- **customer_adoption**: shariful-garage
+- **customer_adoption**: shariful-garage, menuki-salt-and-pepper, menuki-table-card
+- **menuki**: menuki-salt-and-pepper, menuki-table-card
 - **engineering**: figuring-it-out, thingspeak-desk, cells-on-bench-2026
 - **zengo_alfa**: zengo-alfa-first-lot
 - **zenpack**: none yet
@@ -66,7 +68,7 @@ The charger has the most complete sequence: build (circuit board, May 2024, only
 - **zenbox**: none yet
 - **research**: thingspeak-desk
 - **operations**: zengo-alfa-first-lot, zenwall-first-version
-- **team**: shariful-garage, orange-corners-certificate, meet-bangladesh-expo
+- **team**: menuki-salt-and-pepper, shariful-garage, orange-corners-certificate, meet-bangladesh-expo
 - **life**: friends-bonfire, cycle-mustard-field, cycle-village-road, candid-bw, convocation-2025
 - **photography**: cycle-dawn-road, bicycle-night-street
 - **travel**: cycle-mustard-field, cycle-dawn-road
@@ -78,7 +80,7 @@ The charger has the most complete sequence: build (circuit board, May 2024, only
 - Whether the April 2026 cells are a ZenPack. Used on Now, not on the ZenPack story, until confirmed.
 - Whether ZenWall is part of the ZEN Series charger story. The CV describes a 1.2 kW charger and the expo panel lists ZenWall at 1500 W and 2000 W.
 - Which project the circuit board and the ThingSpeak dashboard belong to.
-- Names of anyone other than Sanjid. No one else is named on the site.
+- Names of anyone other than Sanjid. The only other person named on the site is Tarikul Bhai, owner of Salt & Pepper, because Sanjid named him in the file name.
 
 ## Every photo
 
@@ -305,3 +307,31 @@ The charger has the most complete sequence: build (circuit board, May 2024, only
 - **Quality:** Good. Dramatic light, slight grain.
 - **Alt text:** Sanjid and seven friends kicking their legs up beside a bonfire at night.
 - **Caption:** New Year’s Eve with friends.
+
+### menuki-salt-and-pepper
+
+- **File:** Menuki with Tarikul bhai owner of Salt  Pepper.jpg → `public/images/library/menuki-salt-and-pepper.jpg` (1200×1600, portrait)
+- **Camera date:** 2023:10:02 19:18:10
+- **Categories:** CUSTOMER / ADOPTION; also PERSONAL / IDENTITY, TEAM / COMPANY BUILDING
+- **What is visible:** Sanjid and a man in a turquoise shirt hold a small stack of MenuKi cards together, each with a QR code, the words Scan here for digital menu and Menu Ki?, in a restaurant with white brick walls, watercolour paintings and a counter.
+- **Subjects:** Sanjid, restaurant owner, MenuKi QR cards
+- **Context:** Sanjid's file name: MenuKi with Tarikul bhai, owner of Salt & Pepper. Camera date 2 October 2023. His upload message says the pilot phase. Confidence: high.
+- **Roles:** CUSTOMER / ADOPTION, ABOUT, TIMELINE. **Section:** About. **Status:** KEEP
+- **Story value:** The first customer of something he co-founded, years before ZEROOZEN. A person deciding whether it was worth it.
+- **Quality:** Good. Clear faces, slightly posed.
+- **Alt text:** Sanjid handing MenuKi QR menu cards to a restaurant owner.
+- **Caption:** Handing over MenuKi cards to Tarikul Bhai, owner of Salt & Pepper, during the pilot. October 2023.
+
+### menuki-table-card
+
+- **File:** menu ki at a restaurant pilot phase.jpg → `public/images/library/menuki-table-card.jpg` (1200×1600, portrait)
+- **Camera date:** 2023:10:02 19:19:27
+- **Categories:** PRODUCT; also CUSTOMER / ADOPTION, FIELD / REALITY
+- **What is visible:** A MenuKi card with a QR code, Scan here for digital menu and Menu Ki?, stuck to the corner of a worn wooden restaurant table. Napkin holder and a brick wall behind.
+- **Subjects:** MenuKi QR card, restaurant table
+- **Context:** Sanjid's file name: MenuKi at a restaurant, pilot phase. Camera date 2 October 2023. Same evening as the handover photo; the restaurant is likely Salt & Pepper but the photo does not show it. Confidence: high for product, medium for place.
+- **Roles:** PRODUCT, CUSTOMER / ADOPTION. **Section:** Not used yet. **Status:** SECONDARY
+- **Story value:** The product where it lived: on a table, waiting to be scanned.
+- **Quality:** Good. Shallow depth of field, card in sharp focus.
+- **Alt text:** A MenuKi QR menu card stuck to the corner of a wooden restaurant table.
+- **Caption:** A MenuKi card on a restaurant table during the pilot. October 2023.

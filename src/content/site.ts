@@ -108,7 +108,12 @@ export const about = {
     { kind: "photo", plate: img("convocation-2025"), path: "" },
     {
       kind: "p",
-      text: "Before I graduated I had co-founded MenuKi, a QR menu service for restaurants. We designed a pilot that put it in 25 restaurants across two cities in five days. In 2023 I also spent a few months on business operations at Desktop IT, doing market research and planning for growth.",
+      text: "In 2022 I co-founded MenuKi, a QR menu service for restaurants. We designed a pilot that put it in 25 restaurants across two cities in five days.",
+    },
+    { kind: "photo", plate: img("menuki-salt-and-pepper"), path: "" },
+    {
+      kind: "p",
+      text: "In 2023 I also spent a few months on business operations at Desktop IT, doing market research and planning for growth.",
     },
     { kind: "gap", ask: "What the restaurant owners taught you. The first time someone decided whether something you made was worth their money." },
     {

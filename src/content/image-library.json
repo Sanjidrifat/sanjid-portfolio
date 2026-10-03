@@ -508,6 +508,72 @@
    "src": "images/library/friends-bonfire.jpg",
    "width": 1600,
    "height": 900
+  },
+  {
+   "id": "menuki-salt-and-pepper",
+   "upload": "60d2a8ac",
+   "original": "Menuki with Tarikul bhai owner of Salt  Pepper.jpg",
+   "primary": "CUSTOMER / ADOPTION",
+   "secondary": [
+    "PERSONAL / IDENTITY",
+    "TEAM / COMPANY BUILDING"
+   ],
+   "description": "Sanjid and a man in a turquoise shirt hold a small stack of MenuKi cards together, each with a QR code, the words Scan here for digital menu and Menu Ki?, in a restaurant with white brick walls, watercolour paintings and a counter.",
+   "subjects": [
+    "Sanjid",
+    "restaurant owner",
+    "MenuKi QR cards"
+   ],
+   "context": "Sanjid's file name: MenuKi with Tarikul bhai, owner of Salt & Pepper. Camera date 2 October 2023. His upload message says the pilot phase.",
+   "context_confidence": "high",
+   "role": [
+    "CUSTOMER / ADOPTION",
+    "ABOUT",
+    "TIMELINE"
+   ],
+   "section": "About",
+   "story": "The first customer of something he co-founded, years before ZEROOZEN. A person deciding whether it was worth it.",
+   "quality": "Good. Clear faces, slightly posed.",
+   "orientation": "portrait",
+   "status": "KEEP",
+   "alt": "Sanjid handing MenuKi QR menu cards to a restaurant owner.",
+   "caption": "Handing over MenuKi cards to Tarikul Bhai, owner of Salt & Pepper, during the pilot. October 2023.",
+   "camera_date": "2023:10:02 19:18:10",
+   "src": "images/library/menuki-salt-and-pepper.jpg",
+   "width": 1200,
+   "height": 1600
+  },
+  {
+   "id": "menuki-table-card",
+   "upload": "4f6c2f55",
+   "original": "menu ki at a restaurant pilot phase.jpg",
+   "primary": "PRODUCT",
+   "secondary": [
+    "CUSTOMER / ADOPTION",
+    "FIELD / REALITY"
+   ],
+   "description": "A MenuKi card with a QR code, Scan here for digital menu and Menu Ki?, stuck to the corner of a worn wooden restaurant table. Napkin holder and a brick wall behind.",
+   "subjects": [
+    "MenuKi QR card",
+    "restaurant table"
+   ],
+   "context": "Sanjid's file name: MenuKi at a restaurant, pilot phase. Camera date 2 October 2023. Same evening as the handover photo; the restaurant is likely Salt & Pepper but the photo does not show it.",
+   "context_confidence": "high for product, medium for place",
+   "role": [
+    "PRODUCT",
+    "CUSTOMER / ADOPTION"
+   ],
+   "section": "Not used yet",
+   "story": "The product where it lived: on a table, waiting to be scanned.",
+   "quality": "Good. Shallow depth of field, card in sharp focus.",
+   "orientation": "portrait",
+   "status": "SECONDARY",
+   "alt": "A MenuKi QR menu card stuck to the corner of a wooden restaurant table.",
+   "caption": "A MenuKi card on a restaurant table during the pilot. October 2023.",
+   "camera_date": "2023:10:02 19:19:27",
+   "src": "images/library/menuki-table-card.jpg",
+   "width": 1200,
+   "height": 1600
   }
  ],
  "collections": {
@@ -524,7 +590,13 @@
    "cycle-village-road"
   ],
   "customer_adoption": [
-   "shariful-garage"
+   "shariful-garage",
+   "menuki-salt-and-pepper",
+   "menuki-table-card"
+  ],
+  "menuki": [
+   "menuki-salt-and-pepper",
+   "menuki-table-card"
   ],
   "engineering": [
    "figuring-it-out",
@@ -549,6 +621,7 @@
    "zenwall-first-version"
   ],
   "team": [
+   "menuki-salt-and-pepper",
    "shariful-garage",
    "orange-corners-certificate",
    "meet-bangladesh-expo"
