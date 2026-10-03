@@ -102,6 +102,13 @@ export default function App() {
           <span>{person.name}</span>
           <span>{person.location}</span>
           <a href={`mailto:${person.email}`}>{person.email}</a>
+          {person.links
+            .filter((l) => l.url)
+            .map((l) => (
+              <a key={l.label} href={l.url} target="_blank" rel="noreferrer">
+                {l.label}
+              </a>
+            ))}
           {SHOW_DRAFTS && <span className="draft-flag">Draft preview. Notes in dashed boxes are for Sanjid.</span>}
         </div>
       </footer>
@@ -431,11 +438,15 @@ function Contact() {
           <span className="hint" aria-live="polite">{copied ? "Copied" : "Click to copy"}</span>
         </p>
         <p className="direct">
-          <a href={person.linkedin} target="_blank" rel="noreferrer">
-            LinkedIn
-          </a>
-          <span className="hint">{person.location}</span>
+          {person.links
+            .filter((l) => l.url)
+            .map((l) => (
+              <a key={l.label} href={l.url} target="_blank" rel="noreferrer">
+                {l.label}
+              </a>
+            ))}
         </p>
+        <p className="hint">{person.location}</p>
 
         <form className="form" onSubmit={onSubmit} noValidate>
           <label htmlFor="name">

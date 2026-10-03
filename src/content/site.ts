@@ -46,6 +46,14 @@ export const person = {
   location: "Dhaka, Bangladesh",
   email: "sanjidrifat@gmail.com",
   linkedin: "https://www.linkedin.com/in/sanjid-rifat",
+  /* Profiles shown on Contact and in the footer. A link with an empty url
+   * is skipped until it is filled in. */
+  links: [
+    { label: "LinkedIn", url: "https://www.linkedin.com/in/sanjid-rifat" },
+    { label: "X", url: "https://x.com/SanjidHRifat" },
+    { label: "Substack", url: "https://substack.com/@sanjidrifat1" },
+    { label: "Facebook", url: "" },
+  ],
 };
 
 /* A paragraph, a picture, or an open question for Sanjid. */
@@ -82,6 +90,11 @@ export const about = {
   title: "How I got here",
   portrait: img("emk-center"),
   blocks: [
+    {
+      kind: "p",
+      text: "I grew up by the Shitalakshya river in Narayanganj. It is my hometown, and I still have a lot of affection for it.",
+    },
+    { kind: "gap", ask: "A memory of growing up by the river, if you want to share one." },
     { kind: "gap", ask: "Where curiosity began. The first thing you remember wanting to take apart or understand." },
     {
       kind: "p",

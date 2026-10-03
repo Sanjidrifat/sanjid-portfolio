@@ -504,7 +504,7 @@ h1 {
   display: flex;
   flex-wrap: wrap;
   align-items: baseline;
-  gap: 4px 16px;
+  gap: 4px 24px;
   margin: 0 0 12px;
 }
 
