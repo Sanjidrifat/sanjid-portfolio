@@ -96,7 +96,7 @@ The charger has the most complete sequence: build (circuit board, May 2024, only
 - **Story value:** Shows the site's opening line literally. Sanjid's own caption says he was trying to figure out something he forgot.
 - **Quality:** Good. Sharp on the board, natural light, slightly busy background.
 - **Alt text:** Sanjid, wearing a mask and gloves, inspecting a circuit board up close.
-- **Caption:** Mask on, gloves on, trying to remember what I was checking on this board. May 2024.
+- **Caption:** Mask on, gloves on, trying to figure out something I had forgotten. May 2024.
 
 ### emk-center
 
@@ -124,7 +124,7 @@ The charger has the most complete sequence: build (circuit board, May 2024, only
 - **Story value:** Quiet, unposed. Already black and white, so it sits naturally in the site.
 - **Quality:** Good. Soft focus, edited.
 - **Alt text:** Black and white photo of Sanjid looking down at his phone.
-- **Caption:** Caught reading something on my phone.
+- **Caption:** Looking at my phone.
 
 ### convocation-2025
 
@@ -250,7 +250,7 @@ The charger has the most complete sequence: build (circuit board, May 2024, only
 - **Story value:** Life outside work. The bicycle appears in four of the sixteen photos.
 - **Quality:** Fair. Older phone, subject small. The yellow is lost in black and white.
 - **Alt text:** Sanjid standing with his bicycle in a mustard field.
-- **Caption:** Stopped in a mustard field with my bike. December 2017.
+- **Caption:** With my bike in a mustard field. December 2017.
 
 ### cycle-village-road
 
@@ -278,7 +278,7 @@ The charger has the most complete sequence: build (circuit board, May 2024, only
 - **Story value:** Shows how he looks at things. Low to the ground, close to the road.
 - **Quality:** Good. Edited with a vignette.
 - **Alt text:** A misty road at dawn seen from ground level, with bicycle wheels on the verge.
-- **Caption:** Early morning, with the mist still on the road.
+- **Caption:** A misty road, seen from the verge.
 
 ### bicycle-night-street
 
