@@ -26,7 +26,19 @@ export type Plate = {
   src: string | null;
   alt: string;
   caption: string;
+  shape?: "landscape" | "portrait" | "square";
 };
+
+/* Sanjid's photos. Every description, caption and alt text lives in
+ * image-library.json (built by scripts/image_library.py); see
+ * docs/image-library.md. Pages pick photos from it by id. */
+import library from "./image-library.json";
+
+export function img(id: string): Plate {
+  const e = library.images.find((i) => i.id === id);
+  if (!e) throw new Error(`No image "${id}" in the image library`);
+  return { src: e.src, alt: e.alt, caption: e.caption, shape: e.orientation as Plate["shape"] };
+}
 
 export const person = {
   name: "Sanjid Hasan Al Rifat",
@@ -46,6 +58,7 @@ export type Block =
 /* ---------- Home ---------- */
 
 export const home = {
+  photo: img("figuring-it-out"),
   greeting: "Hi, I’m Sanjid.",
   line: "I like figuring things out.",
   opening: [
@@ -67,11 +80,7 @@ export const home = {
 
 export const about = {
   title: "How I got here",
-  portrait: {
-    src: null,
-    alt: "Sanjid Hasan Al Rifat",
-    caption: "Portrait",
-  } as Plate,
+  portrait: img("emk-center"),
   blocks: [
     { kind: "gap", ask: "Where curiosity began. The first thing you remember wanting to take apart or understand." },
     {
@@ -83,6 +92,7 @@ export const about = {
       kind: "p",
       text: "I studied electrical and electronic engineering at Ahsanullah University of Science and Technology from 2018 to 2022. What I built there was small and practical. A low cost pulse oximeter, a cycloconverter, a circuit for automatic power factor improvement, audio sent over frequency division multiplexing. My thesis was IntelliClass, a classroom that took attendance by RFID, sensed its own environment and logged everything to the cloud.",
     },
+    { kind: "photo", plate: img("convocation-2025"), path: "" },
     {
       kind: "p",
       text: "Before I graduated I had co-founded MenuKi, a QR menu service for restaurants. We designed a pilot that put it in 25 restaurants across two cities in five days. In 2023 I also spent a few months on business operations at Desktop IT, doing market research and planning for growth.",
@@ -92,6 +102,7 @@ export const about = {
       kind: "p",
       text: "Later in 2023 I joined ZEROOZEN as a hardware design engineer and spent most of that time on one charger, through twenty three versions. In February 2024 I became a co-founder and its Chief Product Officer. Since then the work has spread from circuit boards to vehicles, batteries, data, supply chains, investors and a fleet of more than 400 vehicles.",
     },
+    { kind: "photo", plate: img("thingspeak-desk"), path: "" },
     { kind: "gap", ask: "A moment when something technically correct turned out not to be useful." },
     { kind: "gap", ask: "What co-founding taught you about ownership that a job never did." },
   ] as Block[],
@@ -127,6 +138,7 @@ export type Story = {
 };
 
 export const work = {
+  photo: img("shariful-garage"),
   title: "Work",
   intro: "A few things I have spent a lot of time trying to make work. All of them at ZEROOZEN, all of them for people who earn a living on Bangladesh’s roads.",
 };
@@ -166,12 +178,8 @@ export const stories: Story[] = [
         kind: "p",
         text: "ZENGO ALFA launched in September 2025. Since then it has done more than 2.8 lakh km in field operation and brought in over BDT 3.5 million in its first quarter. The electrical architecture underneath is meant to outlast this one vehicle. It is the base for the commercial and passenger platforms that come next.",
       },
-      { kind: "gap", ask: "A moment from the field after launch. Something a driver said, or something that surprised you." },
-      {
-        kind: "photo",
-        plate: { src: null, alt: "ZENGO ALFA in operation", caption: "ZENGO ALFA in operation" },
-        path: "/images/zengo-alfa/field.jpg",
-      },
+      { kind: "photo", plate: img("zengo-alfa-first-lot"), path: "" },
+      { kind: "gap", ask: "A moment from the field after launch. Something a driver said, or something that surprised you. A photo of a ZENGO ALFA at work on the road would also help." },
     ],
     notes: [
       { label: "Launched", value: "September 2025" },
@@ -250,11 +258,7 @@ export const stories: Story[] = [
         kind: "p",
         text: "What came out of it is a 1.2 kW half bridge resonant converter with an EMI filter on the input. The firmware runs a four stage charge, precharge, constant current, constant voltage and float, tuned to slow battery degradation. It protects against short circuits, overcharging and reversed polarity.",
       },
-      {
-        kind: "photo",
-        plate: { src: null, alt: "Charger PCB during prototyping", caption: "One of the prototype boards" },
-        path: "/images/zen-charger/pcb.jpg",
-      },
+
       {
         kind: "p",
         text: "I did the PCB layout and wrote the embedded C and C++ firmware, and simulated it in LTspice, PLECS and Simulink. Then we built it, tested it, found what was wrong, and built it again.",
@@ -263,10 +267,12 @@ export const stories: Story[] = [
         kind: "p",
         text: "It reaches 87 percent efficiency at peak load. The habits it forced on us, the hardware design standards and the way we source components, became the starting point for every ZEROOZEN product after it.",
       },
+      { kind: "photo", plate: img("zenwall-first-version"), path: "" },
       {
         kind: "p",
         text: "What still interests me about it is how a small piece of power electronics ends up sitting between the grid, the battery, the vehicle and someone’s livelihood.",
       },
+      { kind: "photo", plate: img("meet-bangladesh-expo"), path: "" },
     ],
     notes: [
       { label: "Prototypes", value: "23 iterations" },
@@ -361,11 +367,14 @@ export const life = {
     ],
   },
   photos: [
-    { src: null, alt: "A photograph Sanjid took", caption: "Caption to come" },
-    { src: null, alt: "A photograph Sanjid took", caption: "Caption to come" },
-    { src: null, alt: "A photograph Sanjid took", caption: "Caption to come" },
+    img("friends-bonfire"),
+    img("cycle-village-road"),
+    img("cycle-dawn-road"),
+    img("candid-bw"),
+    img("cycle-mustard-field"),
   ] as Plate[],
   gaps: [
+    "A bicycle shows up in four of the photos you sent. A line or two about riding, if it matters to you.",
     "What you do when you are not working.",
     "Places that matter to you, with one line each.",
     "Small rituals or things you notice.",
@@ -377,6 +386,7 @@ export const life = {
 export const now = {
   title: "Now",
   updated: "October 2026",
+  photo: img("cells-on-bench-2026"),
   blocks: [
     {
       kind: "p",

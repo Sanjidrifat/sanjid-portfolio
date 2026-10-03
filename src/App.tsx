@@ -1,6 +1,7 @@
 import { useEffect, useState, type FormEvent } from "react";
 import {
   SHOW_DRAFTS,
+  img,
   about,
   contact,
   home,
@@ -208,6 +209,9 @@ function Home() {
           <span className="soft">{home.line}</span>
         </h1>
       </header>
+      <div className="col lead-photo">
+        <Photo plate={home.photo} path="" />
+      </div>
       <div className="col prose opening">
         {home.opening.map((t) => (
           <p key={t}>{t}</p>
@@ -249,6 +253,9 @@ function About() {
       <div className="col">
         <Entries heading="Along the way" items={record} />
         <Entries heading="Recognition" items={recognition} />
+        <div className="figure small">
+          <Photo plate={img("orange-corners-certificate")} path="" />
+        </div>
       </div>
     </article>
   );
@@ -260,6 +267,9 @@ function WorkIndex() {
       <PageHead kicker="Work" title={work.intro.split(". ")[0] + "."}>
         <p className="lede">{work.intro.split(". ").slice(1).join(". ")}</p>
       </PageHead>
+      <div className="col-wide lead-photo">
+        <Photo plate={work.photo} path="" />
+      </div>
       <div className="col">
         <StoryList />
       </div>
@@ -340,7 +350,7 @@ function Life() {
       </section>
       <div className="col-wide photo-row">
         {life.photos.map((p, i) => (
-          <Photo key={i} plate={p} path={`/images/life/${i + 1}.jpg`} tall />
+          <Photo key={i} plate={p} path="" />
         ))}
       </div>
       <div className="col prose">
@@ -357,6 +367,9 @@ function Now() {
     <article>
       <PageHead kicker={`Updated ${now.updated}`} title={now.title} />
       <div className="col prose">
+        <div className="figure">
+          <Photo plate={now.photo} path="" />
+        </div>
         <Blocks blocks={now.blocks} />
       </div>
     </article>

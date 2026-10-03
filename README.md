@@ -34,12 +34,18 @@ memory, motivation or opinion that is not in Sanjid's own materials or his own w
 
 Figures come from Sanjid's CV (October 2026).
 
-## Adding photos
+## Photos
 
-Story pages, About and Life show a hatched placeholder that names the file it
-expects, for example `public/images/zengo-alfa/road.jpg`. Drop the image there and set the
-matching `plate.src` in `site.ts` to `/images/zengo-alfa/road.jpg`. Photos render in
-greyscale, to keep the site black and white.
+Sanjid's photos are catalogued in `docs/image-library.md` (readable) and
+`src/content/image-library.json` (used by the site): what each one shows, its date,
+where it is used, alt text and caption. Pages pick a photo by id with `img("emk-center")`
+in `site.ts`. Photos render in greyscale to keep the site black and white.
+
+To add photos, put the originals in an uploads folder, add an entry to
+`scripts/image_library.py` and run `python3 scripts/image_library.py <folder>` (needs
+Pillow). It writes resized copies to `public/images/library/`.
+
+Where no real photo exists yet, a hatched placeholder names the file it expects.
 
 ## Contact form
 

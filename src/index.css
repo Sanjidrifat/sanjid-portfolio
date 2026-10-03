@@ -450,15 +450,16 @@ h1 {
   font-size: 17px;
 }
 
+/* Life photos fall into two loose columns, like prints laid on a table. */
 .photo-row {
-  display: grid;
-  gap: 16px;
+  columns: 2 300px;
+  column-gap: 24px;
   margin-block: 56px;
 }
-@media (min-width: 700px) {
-  .photo-row {
-    grid-template-columns: repeat(3, 1fr);
-  }
+.photo-row .plate.plate {
+  break-inside: avoid;
+  margin-bottom: 28px;
+  max-width: none;
 }
 
 /* ---------- gaps for Sanjid ---------- */
@@ -604,6 +605,35 @@ h1 {
 }
 .plate .frame.tall {
   aspect-ratio: 4 / 5;
+}
+
+.plate .frame.natural {
+  aspect-ratio: auto;
+}
+.plate .frame.natural img {
+  height: auto;
+}
+
+/* Upright photos stay narrower than the reading column. */
+.plate.portrait {
+  max-width: 440px;
+}
+.plate.square {
+  max-width: 520px;
+}
+.figure.small .plate {
+  max-width: 280px;
+}
+.figure.small {
+  margin-top: 32px;
+}
+
+/* A single photo that opens a page, a little wider than the text. */
+.lead-photo {
+  margin-block: 8px 56px;
+}
+.col-wide.lead-photo {
+  max-width: calc(820px + 2 * var(--gutter));
 }
 
 .plate img {

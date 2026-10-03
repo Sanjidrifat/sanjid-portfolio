@@ -25,10 +25,10 @@ function Crops() {
  * file to drop in, so real images can replace it without code changes. */
 export function Photo({ plate, path, tall }: { plate: PlateData; path: string; tall?: boolean }) {
   return (
-    <figure className="plate">
-      <div className={`frame${tall ? " tall" : ""}`}>
+    <figure className={`plate ${plate.src ? plate.shape ?? "landscape" : ""}`}>
+      <div className={`frame${plate.src ? " natural" : tall ? " tall" : ""}`}>
         {plate.src ? (
-          <img src={plate.src} alt={plate.alt} loading="lazy" />
+          <img src={plate.src} alt={plate.alt} loading="lazy" decoding="async" />
         ) : (
           <div className="placeholder" role="img" aria-label={`Placeholder for ${plate.alt}`}>
             <div className="tag">
@@ -37,7 +37,7 @@ export function Photo({ plate, path, tall }: { plate: PlateData; path: string; t
             </div>
           </div>
         )}
-        <Crops />
+        {!plate.src && <Crops />}
       </div>
       <figcaption>
         <span>{plate.caption}</span>
