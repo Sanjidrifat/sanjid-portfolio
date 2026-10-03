@@ -96,7 +96,7 @@ The charger has the most complete sequence: build (circuit board, May 2024, only
 - **Story value:** Shows the site's opening line literally. Sanjid's own caption says he was trying to figure out something he forgot.
 - **Quality:** Good. Sharp on the board, natural light, slightly busy background.
 - **Alt text:** Sanjid, wearing a mask and gloves, inspecting a circuit board up close.
-- **Caption:** Trying to figure out something I had forgotten. May 2024.
+- **Caption:** Mask on, gloves on, trying to remember what I was checking on this board. May 2024.
 
 ### emk-center
 
@@ -110,7 +110,7 @@ The charger has the most complete sequence: build (circuit board, May 2024, only
 - **Story value:** The clearest, friendliest picture of his face. Tells a first-time visitor who Sanjid is.
 - **Quality:** Very good. Clean background, even light.
 - **Alt text:** Sanjid smiling beside the EMK Center sign.
-- **Caption:** At the EMK Center, Dhaka.
+- **Caption:** By the sign at the EMK Center in Dhaka.
 
 ### candid-bw
 
@@ -124,7 +124,7 @@ The charger has the most complete sequence: build (circuit board, May 2024, only
 - **Story value:** Quiet, unposed. Already black and white, so it sits naturally in the site.
 - **Quality:** Good. Soft focus, edited.
 - **Alt text:** Black and white photo of Sanjid looking down at his phone.
-- **Caption:** A quiet one.
+- **Caption:** Caught reading something on my phone.
 
 ### convocation-2025
 
@@ -138,7 +138,7 @@ The charger has the most complete sequence: build (circuit board, May 2024, only
 - **Story value:** Closes the university chapter of About.
 - **Quality:** Good. Warm, busy backdrop that turns flat grey in black and white.
 - **Alt text:** Sanjid in a graduation gown at the AUST 12th convocation.
-- **Caption:** AUST’s 12th convocation, 2025.
+- **Caption:** My convocation at AUST in 2025, three years after I finished the degree.
 
 ### thingspeak-desk
 
@@ -152,7 +152,7 @@ The charger has the most complete sequence: build (circuit board, May 2024, only
 - **Story value:** The start of his ZEROOZEN years. Hardware and data on the same desk.
 - **Quality:** Fair. Backlit, face in shadow. Honest rather than polished.
 - **Alt text:** Sanjid at a cluttered workbench by a window, with a data dashboard on the monitor.
-- **Caption:** The early days of a ThingSpeak server. November 2023.
+- **Caption:** My desk in November 2023. A rework station, loose boards, and the first days of our ThingSpeak server on the screen.
 
 ### zenwall-first-version
 
@@ -166,7 +166,7 @@ The charger has the most complete sequence: build (circuit board, May 2024, only
 - **Story value:** The charger leaving the bench and going on a real wall. The selfie carries how he felt about it.
 - **Quality:** Good. Selfie framing, slightly tilted.
 - **Alt text:** Sanjid taking a selfie beside two wall-mounted chargers on a brick wall.
-- **Caption:** The first version of the ZenWall chargers, on a wall. March 2024.
+- **Caption:** The first ZenWall chargers on a real wall, emergency stops and all. March 2024.
 
 ### meet-bangladesh-expo
 
@@ -180,7 +180,7 @@ The charger has the most complete sequence: build (circuit board, May 2024, only
 - **Story value:** Where the charger work ended up: a family of products shown in public.
 - **Quality:** Good. Product text partly blurred.
 - **Alt text:** Sanjid at an expo stand in front of three wall-mounted chargers.
-- **Caption:** With the charger line at the Meet Bangladesh expo.
+- **Caption:** Our chargers, ZenLite, ZenGo and ZenWall, on the stand at the Meet Bangladesh expo.
 
 ### zengo-alfa-first-lot
 
@@ -194,7 +194,7 @@ The charger has the most complete sequence: build (circuit board, May 2024, only
 - **Story value:** The launch was not a stage. It was people pushing vehicles into a container after midnight.
 - **Quality:** Fair. Low light, some motion blur. Strong moment.
 - **Alt text:** People pushing an orange electric three wheeler up a ramp into a container at night.
-- **Caption:** Loading the first lot of ZENGO ALFA vehicles, after midnight. September 2025.
+- **Caption:** Past midnight, pushing the first lot of ZENGO ALFA into a container by hand. September 2025.
 
 ### shariful-garage
 
@@ -208,7 +208,7 @@ The charger has the most complete sequence: build (circuit board, May 2024, only
 - **Story value:** The world the work is for: a real garage, real vehicles, the first partner.
 - **Quality:** Very good. Clear faces, rich setting.
 - **Alt text:** Sanjid and two men holding a notebook at the entrance of a rickshaw garage.
-- **Caption:** Onboarding Shariful Garage, ZEROOZEN’s first garage partner. April 2024.
+- **Caption:** The day Shariful Garage became our first garage partner. April 2024.
 
 ### cells-on-bench-2026
 
@@ -222,7 +222,7 @@ The charger has the most complete sequence: build (circuit board, May 2024, only
 - **Story value:** The most recent photo. Fits Now, which is about batteries and BMS.
 - **Quality:** Good. Even light, clear subject.
 - **Alt text:** Sanjid standing beside a battery cell assembly on a desk.
-- **Caption:** April 2026.
+- **Caption:** A cell assembly wired up on the bench. April 2026.
 
 ### orange-corners-certificate
 
@@ -236,7 +236,7 @@ The charger has the most complete sequence: build (circuit board, May 2024, only
 - **Story value:** Evidence for the Orange Corners line. A milestone, so it stays small.
 - **Quality:** Good. Formal pose.
 - **Alt text:** Sanjid holding a framed Orange Corners Bangladesh certificate.
-- **Caption:** Orange Corners Bangladesh, second cohort. August 2024.
+- **Caption:** Holding our certificate from the second Orange Corners Bangladesh cohort. August 2024.
 
 ### cycle-mustard-field
 
@@ -250,7 +250,7 @@ The charger has the most complete sequence: build (circuit board, May 2024, only
 - **Story value:** Life outside work. The bicycle appears in four of the sixteen photos.
 - **Quality:** Fair. Older phone, subject small. The yellow is lost in black and white.
 - **Alt text:** Sanjid standing with his bicycle in a mustard field.
-- **Caption:** December 2017.
+- **Caption:** Stopped in a mustard field with my bike. December 2017.
 
 ### cycle-village-road
 
@@ -264,7 +264,7 @@ The charger has the most complete sequence: build (circuit board, May 2024, only
 - **Story value:** An early picture of him. Rickshaws were already in the frame.
 - **Quality:** Good. Had white side borders from an editing app, cropped off in the web copy.
 - **Alt text:** A younger Sanjid with his bicycle on a village road.
-- **Caption:** July 2017.
+- **Caption:** Gloves on and a village road ahead. July 2017.
 
 ### cycle-dawn-road
 
@@ -278,7 +278,7 @@ The charger has the most complete sequence: build (circuit board, May 2024, only
 - **Story value:** Shows how he looks at things. Low to the ground, close to the road.
 - **Quality:** Good. Edited with a vignette.
 - **Alt text:** A misty road at dawn seen from ground level, with bicycle wheels on the verge.
-- **Caption:** An early ride.
+- **Caption:** Early morning, with the mist still on the road.
 
 ### bicycle-night-street
 
@@ -292,7 +292,7 @@ The charger has the most complete sequence: build (circuit board, May 2024, only
 - **Story value:** Same theme as the dawn road photo, weaker.
 - **Quality:** Fair. Low resolution (833 px), heavy edit.
 - **Alt text:** A bicycle parked on a city street at night.
-- **Caption:** Night ride. 2017.
+- **Caption:** A bike under the streetlights. 2017.
 
 ### friends-bonfire
 
@@ -306,7 +306,7 @@ The charger has the most complete sequence: build (circuit board, May 2024, only
 - **Story value:** The friend. Joy, nothing to do with work.
 - **Quality:** Good. Dramatic light, slight grain.
 - **Alt text:** Sanjid and seven friends kicking their legs up beside a bonfire at night.
-- **Caption:** New Year’s Eve with friends.
+- **Caption:** New Year’s Eve around a bonfire with friends.
 
 ### menuki-salt-and-pepper
 
@@ -320,7 +320,7 @@ The charger has the most complete sequence: build (circuit board, May 2024, only
 - **Story value:** The first customer of something he co-founded, years before ZEROOZEN. A person deciding whether it was worth it.
 - **Quality:** Good. Clear faces, slightly posed.
 - **Alt text:** Sanjid handing MenuKi QR menu cards to a restaurant owner.
-- **Caption:** Handing over MenuKi cards to Tarikul Bhai, owner of Salt & Pepper, during the pilot. October 2023.
+- **Caption:** Handing a stack of MenuKi cards to Tarikul Bhai, who owns Salt & Pepper. Pilot days, October 2023.
 
 ### menuki-table-card
 
@@ -334,4 +334,4 @@ The charger has the most complete sequence: build (circuit board, May 2024, only
 - **Story value:** The product where it lived: on a table, waiting to be scanned.
 - **Quality:** Good. Shallow depth of field, card in sharp focus.
 - **Alt text:** A MenuKi QR menu card stuck to the corner of a wooden restaurant table.
-- **Caption:** A MenuKi card on a restaurant table during the pilot. October 2023.
+- **Caption:** A MenuKi card on a restaurant table during the pilot. Scan it and the menu opens on your phone. October 2023.
