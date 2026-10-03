@@ -82,7 +82,6 @@ export const about = {
     {
       kind: "p",
       text: "I studied electrical and electronic engineering at Ahsanullah University of Science and Technology from 2018 to 2022. What I built there was small and practical. A low cost pulse oximeter, a cycloconverter, a circuit for automatic power factor improvement, audio sent over frequency division multiplexing. My thesis was IntelliClass, a classroom that took attendance by RFID, sensed its own environment and logged everything to the cloud.",
-      confirm: true,
     },
     {
       kind: "p",
@@ -111,7 +110,6 @@ export const record: Entry[] = [
 export const recognition: Entry[] = [
   { when: "2025", what: "Featured as a high potential EV deep tech startup", where: "IDLC Startups Spotlight" },
   { when: "Cohort 2", what: "Accelerator backed by the Dutch Embassy", where: "Orange Corners Bangladesh" },
-  { when: "", what: "Selected participant", where: "Aspire Leaders Program" },
 ];
 
 /* ---------- Work ---------- */
