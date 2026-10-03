@@ -1,20 +1,27 @@
 /*
  * All copy for the site lives here.
  *
- * Sourcing rule: nothing on this site should claim a metric, customer,
- * title or outcome that is not backed by Sanjid's own materials.
- * Any field marked `confirm: true` (or any string listed in a `confirm`
- * array) is a draft written from the project brief and must be checked
- * against the CV / ZEROOZEN materials before launch. While
- * SHOW_CONFIRM_MARKS is true, those items render with a small dashed
- * "to confirm" tag so nothing unverified ships by accident.
+ * Sourcing rule: nothing on this site may claim a metric, customer, title,
+ * outcome, memory, motivation or opinion that is not backed by Sanjid's own
+ * materials or his own words. Where his story is not known yet, the copy
+ * leaves a `gap` for him to fill instead of guessing.
+ *
+ * Writing rule: no em dashes, few colons or semicolons, no slogans.
+ *
+ * SHOW_DRAFTS controls everything that is still waiting on Sanjid: the
+ * Thinking, Life and Now pages, and the gap notes inside other pages.
+ * Keep it true for previews. Set it to false for the public site.
+ *
+ * SHOW_CONFIRM_MARKS shows a small "to confirm" tag on lines that are a
+ * reasonable reading of the sources but not stated in them.
  */
 
+export const SHOW_DRAFTS = true;
 export const SHOW_CONFIRM_MARKS = true;
 
 /* Images: drop files into /public/images/... and set `src` to the path
- * (e.g. "/images/zengo-alfa/field.jpg"). While `src` is null the site
- * draws a measured placeholder plate with the caption shown. */
+ * (e.g. "/images/zengo-alfa/road.jpg"). While `src` is null the site draws
+ * a placeholder naming the file it expects. */
 export type Plate = {
   src: string | null;
   alt: string;
@@ -25,447 +32,370 @@ export const person = {
   name: "Sanjid Hasan Al Rifat",
   shortName: "Sanjid",
   location: "Dhaka, Bangladesh",
-  coordinates: "23.81° N  90.41° E",
-  identity: ["Engineer", "Strategist", "Builder", "Operator"],
-  // Set before launch. Leave empty to hide the address on the page.
   email: "sanjidrifat@gmail.com",
   linkedin: "https://www.linkedin.com/in/sanjid-rifat",
 };
 
-export const hero = {
-  headline: "I go where the problem is—and build what comes next.",
-  support:
-    "I work across strategy, product, engineering, and operations to turn real-world problems into valuable solutions that reach the people who need them.",
-  primaryCta: "View My Work",
-  secondaryCta: "Let’s Talk",
-  thesis: "I don’t just build things. I make them work in the real world.",
-};
+/* A paragraph, a picture, or an open question for Sanjid. */
+export type Block =
+  | { kind: "p"; text: string; confirm?: boolean }
+  | { kind: "photo"; plate: Plate; path: string }
+  | { kind: "diagram" }
+  | { kind: "gap"; ask: string };
 
-/* CURRENT WORK: the layers at ZEROOZEN, shown as one connected system. */
-export const currentWork = {
-  title: "Current work",
-  lede: "At ZEROOZEN, I work across the boundary between what people need, what technology can do, and what a business can actually execute.",
-  note: "These are not separate departments. Each layer is a decision that changes the ones next to it.",
-  layers: [
-    { name: "Customer", line: "Drivers, operators and garages who earn from light electric vehicles, and whose margins decide what works." },
-    { name: "Proposition", line: "What is worth paying for: uptime, range, running cost, battery life." },
-    { name: "Product", line: "A vehicle, a battery, a charger and a data system, each designed from that proposition." },
-    { name: "Engineering", line: "Powertrain models, power electronics, PCB and firmware, pack architecture and BMS." },
-    { name: "Supply", line: "Global sourcing integrated with local manufacturing, aiming for at least 20% lower unit cost." },
-    { name: "Deployment", line: "Products delivered to real vehicles and customers, not left as prototypes." },
-    { name: "Operations", line: "400+ light electric vehicles under active fleet management across multiple cities." },
+/* ---------- Home ---------- */
+
+export const home = {
+  greeting: "Hi, I’m Sanjid.",
+  line: "I like figuring things out.",
+  opening: [
+    "It usually starts small. Something doesn’t quite make sense to me, and I find I can’t put it down. A number that looks wrong. A machine that works on paper and struggles on the road. A person who needs one thing and keeps being handed another.",
+    "I trained as an electrical engineer. For the last few years, the questions I can’t put down have mostly lived on the roads of Dhaka. Electric three wheelers, the batteries inside them, the chargers they come back to, and the people who earn a living from all of it.",
+    "I still don’t understand most things as well as I’d like. What I have learned came from going closer to the problem than seemed necessary, and staying around after the work should have been finished.",
+    "This site is some of that. The work, the thinking, and a few things that have nothing to do with either.",
+  ],
+  workNote: "Most of it at ZEROOZEN Energy in Dhaka, where I am a co-founder and the Chief Product Officer.",
+  /* Sanjid's own description of how he works, from his brief. */
+  howIWork: [
+    "I usually start by going closer to the problem. I want to see what is actually happening.",
+    "Then I try to understand the person experiencing it, and ask what actually matters. Then I decide what is worth solving, and figure out what it would take to make it real.",
+    "And then I stay around long enough to see what happens after it leaves the lab.",
   ],
 };
 
-/* HOW I WORK: an operating philosophy, not a process diagram. */
-export const philosophy = {
-  title: "How I work",
-  lines: [
-    "Go to reality.",
-    "Understand the people inside the problem.",
-    "Find the constraint that actually matters.",
-    "Decide what is worth solving.",
-    "Build the smallest thing that can test the idea.",
-    "Put it in the field.",
-    "Watch what happens.",
-    "Build from what reality teaches you.",
-  ],
+/* ---------- About ---------- */
+
+export const about = {
+  title: "How I got here",
+  portrait: {
+    src: null,
+    alt: "Sanjid Hasan Al Rifat",
+    caption: "Portrait",
+  } as Plate,
+  blocks: [
+    { kind: "gap", ask: "Where curiosity began. The first thing you remember wanting to take apart or understand." },
+    {
+      kind: "p",
+      text: "For technical things, the person I have followed the longest is Steve Wozniak. I have followed him since my earliest days. If I had to name one role model, it would be Einstein.",
+    },
+    { kind: "gap", ask: "Why electrical engineering. A choice, a default, or someone’s push." },
+    {
+      kind: "p",
+      text: "I studied electrical and electronic engineering at Ahsanullah University of Science and Technology from 2018 to 2022. What I built there was small and practical. A low cost pulse oximeter, a cycloconverter, a circuit for automatic power factor improvement, audio sent over frequency division multiplexing. My thesis was IntelliClass, a classroom that took attendance by RFID, sensed its own environment and logged everything to the cloud.",
+      confirm: true,
+    },
+    {
+      kind: "p",
+      text: "Before I graduated I had co-founded MenuKi, a QR menu service for restaurants. We designed a pilot that put it in 25 restaurants across two cities in five days. In 2023 I also spent a few months on business operations at Desktop IT, doing market research and planning for growth.",
+    },
+    { kind: "gap", ask: "What the restaurant owners taught you. The first time someone decided whether something you made was worth their money." },
+    {
+      kind: "p",
+      text: "Later in 2023 I joined ZEROOZEN as a hardware design engineer and spent most of that time on one charger, through twenty three versions. In February 2024 I became a co-founder and its Chief Product Officer. Since then the work has spread from circuit boards to vehicles, batteries, data, supply chains, investors and a fleet of more than 400 vehicles.",
+    },
+    { kind: "gap", ask: "A moment when something technically correct turned out not to be useful." },
+    { kind: "gap", ask: "What co-founding taught you about ownership that a job never did." },
+  ] as Block[],
 };
 
-/* SYSTEMS I WORK ACROSS: what I actually do with each, not a tool list. */
-export const systems = [
-  {
-    name: "Energy",
-    scope: "Power electronics, charging systems, battery architecture, BMS.",
-    work: "I designed the ZEN Series charger’s power stage, PCB and firmware, defined ZenPack’s architecture and BMS requirements, and am developing ZEN BMS with EKF-based state-of-charge estimation.",
-  },
-  {
-    name: "Mobility",
-    scope: "EV powertrain, drivetrain, energy modelling, vehicle systems.",
-    work: "I built the light-EV powertrain model (range, depth of discharge, motor sizing, pack design) that ZENGO ALFA was engineered from.",
-  },
-  {
-    name: "Intelligence",
-    scope: "IoT, telemetry, connected vehicles, fleet data, monitoring.",
-    work: "ZENBOX telematics, GPS and remote on/off on ZENGO ALFA, the CMS charger energy dashboard, and GMS fleet software for tracking, cash flow and rent. MQTT, CAN and RS-485 underneath.",
-  },
-  {
-    name: "Product",
-    scope: "Requirements, architecture, prioritisation, validation, commercialisation.",
-    work: "I turn field conditions into specifications, decide what is worth building, validate against local data, and take the result to market.",
-  },
-  {
-    name: "Operations",
-    scope: "Supply chain, manufacturing, deployment, fleet operations.",
-    work: "A global supply chain integrated with local manufacturing, 400+ vehicles under active fleet management, and budgeting and capital allocation across hardware, R&D and go-to-market.",
-  },
+export type Entry = { when: string; what: string; where: string };
+
+export const record: Entry[] = [
+  { when: "2024 to now", what: "Co-Founder and Chief Product Officer", where: "ZEROOZEN Energy" },
+  { when: "2023 to 2024", what: "Hardware Design Engineer", where: "ZEROOZEN Energy" },
+  { when: "2023", what: "Business Operations Strategist", where: "Desktop IT" },
+  { when: "2022 to 2023", what: "Co-Founder and Business Strategist", where: "MenuKi" },
+  { when: "2018 to 2022", what: "BSc, Electrical and Electronic Engineering", where: "Ahsanullah University of Science and Technology" },
 ];
 
-/* PROJECTS
- *
- * Each project is a chain of reasoning, told under the four panels that are
- * the site's signature device:
- *
- *   REALITY   what was happening, why it mattered, what was missing
- *   DECISION  what we believed should change, and the idea
- *   BUILD     the system, and the technical decisions with their reasons
- *   FIELD     what it makes possible, and what happened in the field
- *
- * Technology is the enabler, never the opening. Every metric carries the
- * reason it matters. Raw specifications sit in `specs`, shown small. */
+export const recognition: Entry[] = [
+  { when: "2025", what: "Featured as a high potential EV deep tech startup", where: "IDLC Startups Spotlight" },
+  { when: "Cohort 2", what: "Accelerator backed by the Dutch Embassy", where: "Orange Corners Bangladesh" },
+  { when: "", what: "Selected participant", where: "Aspire Leaders Program" },
+];
 
-export type Text = { body: string; confirm?: boolean };
-export type Choice = { title: string; why: string; confirm?: boolean };
-export type Evidence = { value: string; because: string; confirm?: boolean };
+/* ---------- Work ---------- */
 
-export type Project = {
+export type Story = {
   id: string;
-  index: string;
   name: string;
-  date: string;
-  thesis: string;
-  question: string;
+  dek: string;
+  when: string;
   diagram: "vehicle" | "pack" | "charger" | "drivecycle";
-  realityPlate: Plate;
-  fieldPlate: Plate;
-  context: Text[];
-  belief: Text;
-  idea: Text;
-  chain: string[];
-  system: Text;
-  depth: Choice[];
-  value: Text;
-  proof: Text;
-  evidence: Evidence[];
-  reflection: string;
-  specs: string[];
+  diagramCaption: string;
+  blocks: Block[];
+  /* Dated facts and figures, set small like notes in a margin. */
+  notes: { label: string; value: string; confirm?: boolean }[];
 };
 
-export const projects: Project[] = [
+export const work = {
+  title: "Work",
+  intro: "A few things I have spent a lot of time trying to make work. All of them at ZEROOZEN, all of them for people who earn a living on Bangladesh’s roads.",
+};
+
+export const stories: Story[] = [
   {
     id: "zengo-alfa",
-    index: "01",
     name: "ZENGO ALFA",
-    date: "Launched Sep 2025",
-    thesis: "A commercial EV has to make economic sense before it makes technical sense.",
-    question: "What does this vehicle have to do for its operator to earn from it?",
+    dek: "An electric three wheeler, and the arithmetic of the person driving it.",
+    when: "Launched September 2025",
     diagram: "vehicle",
-    realityPlate: { src: null, alt: "A three-wheeler operator at work on a Bangladeshi road", caption: "Reality: a working day on the road" },
-    fieldPlate: { src: null, alt: "ZENGO ALFA in commercial operation", caption: "Field: ZENGO ALFA in operation" },
-    context: [
+    diagramCaption: "Side elevation, schematic. Where the battery, motor and GPS sit.",
+    blocks: [
       {
-        body: "A three-wheeler is a working machine. Payload, range, energy consumption, reliability, uptime, serviceability and acquisition cost all affect the operator’s ability to earn from it.",
+        kind: "p",
+        text: "A three wheeler in Bangladesh is a working machine. Someone’s income depends on how much it can carry, how far it goes on a charge, how often it is off the road, and how much it cost in the first place.",
       },
       {
-        body: "Yet the numbers these vehicles were designed around (range, depth of discharge, energy per kilometre) came from foreign assumptions, not from how they are driven here.",
-      },
-    ],
-    belief: {
-      body: "We treated the vehicle as a system rather than a collection of imported components, and decided to compute its core numbers for Bangladesh before designing anything.",
-    },
-    idea: { body: "Let the operator’s economics define the vehicle, and let a local powertrain model translate them into engineering." },
-    chain: ["Vehicle", "Powertrain", "Energy", "Electronics", "Connectivity", "Operations"],
-    system: {
-      body: "Customer and operating requirements fed a mathematical powertrain and drivetrain model. Its outputs drove the drivetrain decisions, battery and motor integration, onboard electronics and connectivity, and finally the commercial product.",
-    },
-    depth: [
-      {
-        title: "Model before hardware",
-        why: "Range, depth of discharge and energy per kilometre are computed from local operating parameters, so motor sizing and pack design start from Bangladesh rather than from a datasheet.",
+        kind: "photo",
+        plate: { src: null, alt: "A three wheeler at work on a road in Bangladesh", caption: "On the road" },
+        path: "/images/zengo-alfa/road.jpg",
       },
       {
-        title: "Connected from launch",
-        why: "Integrated GPS with remote on/off and live connectivity means the vehicle can be managed as part of a fleet, not just driven.",
+        kind: "p",
+        text: "When we looked closely at the numbers electric three wheelers were being designed around, range and depth of discharge and energy per kilometre, most of them came from assumptions made somewhere else. Other roads, other loads, other drivers.",
       },
       {
-        title: "Chassis and security for a working vehicle",
-        why: "An optimized chassis and dual-lock security, because a commercial vehicle is loaded hard every day and earns nothing while it is off the road.",
-        confirm: true,
+        kind: "p",
+        text: "So before designing anything, I built a mathematical model of the powertrain and drivetrain. Give it local operating conditions and it works out range, depth of discharge and energy use per kilometre. The motor size and the battery pack came out of that model, and so did most of the decisions after them.",
+      },
+      { kind: "diagram" },
+      {
+        kind: "p",
+        text: "What came out the other end has an optimized chassis, a battery and motor matched to each other, dual lock security, and GPS with live connectivity and remote on and off. The connectivity matters more than it sounds. It means the vehicle can be looked after as part of a fleet, not only driven.",
       },
       {
-        title: "Architecture with room to grow",
-        why: "A scalable electrical architecture, so the same foundation can extend to dual-purpose commercial and passenger platforms.",
+        kind: "p",
+        text: "ZENGO ALFA launched in September 2025. Since then it has done more than 2.8 lakh km in field operation and brought in over BDT 3.5 million in its first quarter. The electrical architecture underneath is meant to outlast this one vehicle. It is the base for the commercial and passenger platforms that come next.",
+      },
+      { kind: "gap", ask: "A moment from the field after launch. Something a driver said, or something that surprised you." },
+      {
+        kind: "photo",
+        plate: { src: null, alt: "ZENGO ALFA in operation", caption: "ZENGO ALFA in operation" },
+        path: "/images/zengo-alfa/field.jpg",
       },
     ],
-    value: {
-      body: "Operators get a vehicle designed around their roads and their economics, which can be tracked and managed as part of a connected fleet.",
-    },
-    proof: { body: "ZENGO ALFA launched commercially in September 2025 and went straight into field operation." },
-    evidence: [
-      { value: "2.8 lakh+ km", because: "of field operation, because the vehicle had to survive actual usage." },
-      { value: "BDT 3.5M+", because: "in revenue in the first quarter after launch, because it had to make economic sense first." },
-    ],
-    reflection:
-      "The result was ZENGO ALFA: a connected electric three-wheeler platform developed around local operating conditions and deployed in the field.",
-    specs: [
-      "Li-ion electric three-wheeler",
-      "Powertrain and drivetrain model: range, DoD, energy/km",
-      "Integrated GPS, remote on/off, live connectivity",
-      "Dual-lock security",
-      "Optimized chassis",
+    notes: [
+      { label: "Launched", value: "September 2025" },
+      { label: "Field operation", value: "2.8 lakh+ km" },
+      { label: "First quarter revenue", value: "BDT 3.5M+" },
+      { label: "Model", value: "Range, DoD, energy per km" },
+      { label: "On board", value: "GPS, remote on/off, live connectivity" },
     ],
   },
   {
     id: "zenpack",
-    index: "02",
     name: "ZenPack",
-    date: "In deployment",
-    thesis: "The battery determines whether the vehicle works.",
-    question: "What does this battery need to do for its operator to make economic sense?",
+    dek: "What a battery has to do for someone to make money with it.",
+    when: "In deployment since 2026",
     diagram: "pack",
-    realityPlate: { src: null, alt: "Batteries being serviced in a local garage", caption: "Reality: batteries in a local garage" },
-    fieldPlate: { src: null, alt: "A ZenPack installed in a working vehicle", caption: "Field: ZenPack in a working vehicle" },
-    context: [
+    diagramCaption: "Pack architecture, schematic. The master and slave BMS is ZEN BMS, still in development.",
+    blocks: [
       {
-        body: "In commercial electric mobility, the battery is not simply an energy-storage component. It defines usable range, uptime, operating economics, replacement cycles, and ultimately whether the vehicle makes sense to the person operating it.",
+        kind: "p",
+        text: "In a commercial electric vehicle the battery decides most things. How far it goes, how long it stays on the road, what it costs to run, and when the owner has to find the money for a new one.",
       },
       {
-        body: "Pack specifications tended to arrive with the cells, written for conditions that are not ours.",
+        kind: "p",
+        text: "Most packs arrive with a specification written for someone else’s conditions. We wanted to start from ours. So we wrote down what the pack had to do here first, and only then chose the architecture and set the BMS requirements to meet it.",
       },
+      {
+        kind: "photo",
+        plate: { src: null, alt: "ZenPack on the workshop bench", caption: "ZenPack on the bench" },
+        path: "/images/zenpack/bench.jpg",
+      },
+      {
+        kind: "p",
+        text: "Testing was the slow part. Before it went to customers the pack ran 1.2 lakh km on our own driving cycle, because laboratory validation was not enough.",
+      },
+      { kind: "diagram" },
+      {
+        kind: "p",
+        text: "More than 20 packs went into real vehicles in the first two months, and deliveries have been growing about 6.5 percent a month. The target is more than 250 by the end of 2026. That is a target, not a result yet.",
+      },
+      {
+        kind: "p",
+        text: "The next layer is our own battery management. ZEN BMS is a hybrid master and slave design with active and passive balancing. It estimates state of charge with an extended Kalman filter alongside Coulomb counting. It is still in development.",
+      },
+      { kind: "gap", ask: "What you learned when the first packs met real drivers." },
     ],
-    belief: {
-      body: "We started by understanding those conditions locally and translating them into battery requirements, rather than importing a generic pack specification.",
-    },
-    idea: { body: "Treat the battery as an operating system for the vehicle, not a component." },
-    chain: ["Field conditions", "Requirements", "Pack architecture", "BMS", "Validation", "Supply"],
-    system: {
-      body: "The platform combines battery architecture, BMS requirements, monitoring and validation around actual vehicle usage, with a supply chain that pairs global sourcing with local manufacturing.",
-    },
-    depth: [
-      {
-        title: "Requirements before cells",
-        why: "Usable range, uptime and replacement cycles were written down as requirements first. The LFP pack architecture followed from them.",
-      },
-      {
-        title: "Validated on our own drive cycle",
-        why: "Testing ran on a proprietary driving cycle instead of a foreign standard, because the pack had to prove itself under the load it would actually see.",
-      },
-      {
-        title: "Supply designed with the product",
-        why: "Global sourcing integrated with local manufacturing, aiming for at least a 20% reduction in unit cost, because a pack the operator can’t afford solves nothing.",
-      },
-      {
-        title: "Our own BMS next",
-        why: "ZEN BMS, a hybrid master-slave design with active and passive balancing and EKF plus Coulomb-counting state-of-charge estimation, is in development.",
-      },
-    ],
-    value: {
-      body: "Operators get a pack specified for the way they actually drive, built with local manufacturing.",
-    },
-    proof: {
-      body: "The pack was taken beyond the lab, validated against real driving data, then delivered to real vehicles and customers.",
-    },
-    evidence: [
-      { value: "1.2 lakh km", because: "of testing, because laboratory validation was not enough." },
-      { value: "20+ units", because: "delivered within two months, because the technology had to leave the lab." },
-      { value: "6.5%", because: "month-on-month growth, with more than 250 units targeted by the end of 2026." },
-    ],
-    reflection: "The important transition was from battery as component to battery as an operating system for the vehicle.",
-    specs: [
-      "LFP chemistry",
-      "Validated on a proprietary drive cycle",
-      "ZEN BMS (in development): hybrid master-slave",
-      "Active and passive balancing",
-      "SoC: EKF + Coulomb counting",
+    notes: [
+      { label: "Chemistry", value: "LFP" },
+      { label: "Validation", value: "1.2 lakh km, own drive cycle" },
+      { label: "First two months", value: "20+ units delivered" },
+      { label: "Growth", value: "~6.5% month on month" },
+      { label: "Target", value: "250+ units by end of 2026" },
     ],
   },
   {
     id: "zen-charger",
-    index: "03",
     name: "ZEN Series Charger",
-    date: "23 prototype iterations",
-    thesis: "The charger is part of the vehicle’s economics.",
-    question: "What should charging cost an operator, in time, electricity and battery life?",
+    dek: "Twenty three versions of one small box.",
+    when: "2023 to 2024",
     diagram: "charger",
-    realityPlate: { src: null, alt: "Vehicles charging overnight in a garage", caption: "Reality: overnight charging in a garage" },
-    fieldPlate: { src: null, alt: "ZEN Series Charger connected to a vehicle", caption: "Field: ZEN Series Charger in use" },
-    context: [
+    diagramCaption: "Power stage, block diagram, and the four stage charging profile.",
+    blocks: [
       {
-        body: "For an electric three-wheeler, charging is not a standalone electrical process. It determines when the vehicle can return to work, how much electricity the operator consumes, and how the battery is treated over time.",
+        kind: "p",
+        text: "It took twenty three versions to get the charger right.",
       },
       {
-        body: "The market ran on a mix of lithium-ion and lead-acid packs at 48 V and 60 V, and standard chargers gave little control over how energy entered the battery.",
-        confirm: true,
-      },
-    ],
-    belief: {
-      body: "We started from the operating problem rather than the converter topology: build one charging platform that works across the battery chemistries and voltage classes common in the market, while giving us better control over how energy enters the battery.",
-    },
-    idea: { body: "One charger for the packs people actually own, that treats the battery as an asset." },
-    chain: ["Grid", "EMI filter", "Resonant stage", "Charge control", "Battery", "Operator"],
-    system: {
-      body: "An input EMI filter keeps grid-side noise down. A half-bridge resonant DC-DC stage converts power for 48 V or 60 V packs. Embedded firmware runs a four-stage charge (pre-charge, constant current, constant voltage, float) and watches for faults.",
-    },
-    depth: [
-      {
-        title: "Resonant power stage",
-        why: "A 1.2 kW half-bridge resonant converter reaching 87% efficiency at peak load, because every watt lost in the charger is paid for by the operator.",
+        kind: "p",
+        text: "For a three wheeler driver, charging decides when the vehicle can go back to work. For a garage owner, it shows up on the electricity bill. For the battery, it decides how quickly it ages.",
       },
       {
-        title: "Two chemistries, two voltages, one unit",
-        why: "Supporting lithium-ion and lead-acid at 48 V and 60 V meant one product for the market as it is, not as it might become.",
+        kind: "p",
+        text: "So we did not start from the converter. We started from that working day and asked for one charger that could handle the lithium ion and lead acid packs people actually own, at 48 and 60 volts, while giving us control over how energy goes into the battery. The circuit came after that question, not before it.",
+      },
+      { kind: "diagram" },
+      {
+        kind: "p",
+        text: "What came out of it is a 1.2 kW half bridge resonant converter with an EMI filter on the input. The firmware runs a four stage charge, precharge, constant current, constant voltage and float, tuned to slow battery degradation. It protects against short circuits, overcharging and reversed polarity.",
       },
       {
-        title: "Four-stage charging",
-        why: "Pre-charge, CC, CV and float, tuned to reduce battery degradation, because the charger decides how the battery ages.",
+        kind: "photo",
+        plate: { src: null, alt: "Charger PCB during prototyping", caption: "One of the prototype boards" },
+        path: "/images/zen-charger/pcb.jpg",
       },
       {
-        title: "Protection by default",
-        why: "Short-circuit, overcharge and reverse-polarity protection, because the charger is connected by operators in garages, not by engineers in a lab.",
-        confirm: true,
+        kind: "p",
+        text: "I did the PCB layout and wrote the embedded C and C++ firmware, and simulated it in LTspice, PLECS and Simulink. Then we built it, tested it, found what was wrong, and built it again.",
       },
       {
-        title: "Iterated, not assumed",
-        why: "PCB layout, embedded C/C++ firmware and simulation in LTspice, PLECS and Simulink went through 23 prototype iterations before deployment.",
+        kind: "p",
+        text: "It reaches 87 percent efficiency at peak load. The habits it forced on us, the hardware design standards and the way we source components, became the starting point for every ZEROOZEN product after it.",
+      },
+      {
+        kind: "p",
+        text: "What still interests me about it is how a small piece of power electronics ends up sitting between the grid, the battery, the vehicle and someone’s livelihood.",
       },
     ],
-    value: {
-      body: "Operators get one charger for the packs they own, less wasted electricity, and charging designed to protect the battery.",
-    },
-    proof: {
-      body: "Field-validated and commercialized. The hardware design standards and component-sourcing processes built for it became the foundation for every later ZEROOZEN product line.",
-    },
-    evidence: [
-      { value: "23 iterations", because: "because the first solution was not the final solution." },
-      { value: "87%", because: "efficiency at peak load, because wasted energy is the operator’s cost." },
-    ],
-    reflection:
-      "The interesting part is not that the converter works. It is that a relatively small piece of power electronics becomes an interface between the grid, the battery, the vehicle, and the operator’s livelihood.",
-    specs: [
-      "1.2 kW half-bridge resonant DC-DC",
-      "48 V / 60 V output",
-      "Lithium-ion and lead-acid",
-      "Four-stage: pre-charge, CC, CV, float",
-      "Short-circuit, overcharge, reverse-polarity protection",
-      "Input EMI filter",
-      "LTspice · PLECS · Simulink",
+    notes: [
+      { label: "Prototypes", value: "23 iterations" },
+      { label: "Power stage", value: "1.2 kW half bridge resonant" },
+      { label: "Packs", value: "48 / 60 V, Li-ion and lead acid" },
+      { label: "Charging", value: "Precharge, CC, CV, float" },
+      { label: "Efficiency", value: "87% at peak load" },
+      { label: "Tools", value: "LTspice, PLECS, Simulink" },
     ],
   },
   {
     id: "zenbox",
-    index: "04",
-    name: "ZENBOX + Dhaka Urban Drive Cycle",
-    date: "Mirpur, Dhaka",
-    thesis: "We were designing vehicles using assumptions that were not made for our roads.",
-    question: "How do you size a vehicle for Dhaka when no drive cycle describes Dhaka?",
+    name: "ZENBOX and the Dhaka Urban Drive Cycle",
+    dek: "Measuring Dhaka before designing for it.",
+    when: "Mirpur, Dhaka",
     diagram: "drivecycle",
-    realityPlate: { src: null, alt: "Stop-start traffic in Mirpur, Dhaka", caption: "Reality: stop-start traffic in Mirpur" },
-    fieldPlate: { src: null, alt: "ZENBOX installed on a vehicle", caption: "Field: ZENBOX logging on a vehicle" },
-    context: [
+    diagramCaption: "An illustrative stop and start trace, and the light gate over the 32 tooth gear.",
+    blocks: [
       {
-        body: "Global drive cycles such as NEDC and WLTC are useful engineering references. But vehicle behaviour in Dhaka is shaped by a different combination of traffic density, stop-start behaviour, road conditions, climate and infrastructure.",
+        kind: "p",
+        text: "Every vehicle is designed around a drive cycle, a standard pattern of speeding up, cruising and stopping that stands in for real driving. The common ones, NEDC and WLTC, were built for other places. Dhaka’s traffic, roads, climate and constant stopping and starting are something else.",
       },
       {
-        body: "Bangladesh had no drive cycle of its own, and the commercial loggers that could measure one cost too much for the economics of light electric vehicles.",
+        kind: "p",
+        text: "Bangladesh did not have a drive cycle of its own. So instead of adjusting our assumptions around someone else’s standard, we started collecting our own.",
       },
+      {
+        kind: "photo",
+        plate: { src: null, alt: "Traffic in Mirpur, Dhaka", caption: "Mirpur" },
+        path: "/images/zenbox/mirpur.jpg",
+      },
+      {
+        kind: "p",
+        text: "The first problem was cost. Commercial OBD loggers cost too much to put on a fleet of light electric vehicles. ZENBOX was the answer. A high frequency laser sits over a 32 tooth gear and works as a light gate, counting teeth as they pass. That gives RPM once a second without touching the drivetrain, at roughly 90 percent lower unit cost than a commercial logger.",
+      },
+      { kind: "diagram" },
+      {
+        kind: "p",
+        text: "I captured operating conditions in Mirpur, the urban density, traffic patterns, climate, road infrastructure and the stop and start rhythm of the place, and built the Dhaka Urban Drive Cycle from them. As far as we know it is the first urban drive cycle for Bangladesh.",
+      },
+      {
+        kind: "p",
+        text: "It is now the baseline ZEROOZEN uses to evaluate vehicle performance, size battery packs and estimate range. It is also the reference for future regulatory submissions.",
+      },
+      { kind: "gap", ask: "What the data showed that surprised you." },
     ],
-    belief: { body: "Instead of adjusting our assumptions around an existing standard, we started collecting reality." },
-    idea: { body: "Measure the vehicle cheaply enough that measurement can scale, and let the data set the baseline." },
-    chain: ["Road", "Vehicle", "ZENBOX", "Data", "Drive cycle", "Design decisions"],
-    system: {
-      body: "That led to two connected systems: ZENBOX, a low-cost way to capture the physical behaviour of the vehicle, and a locally derived drive-cycle baseline built from operating conditions captured in Mirpur, Dhaka.",
-    },
-    depth: [
-      {
-        title: "Measurement priced for light EVs",
-        why: "The interesting decision was not simply using a sensor. It was finding a measurement architecture inexpensive enough for light electric vehicles while still producing useful operational data.",
-      },
-      {
-        title: "A light gate instead of an OBD port",
-        why: "A high-frequency laser over a 32-tooth gear works as a non-contact tachometer, recording RPM at 1 Hz with no mechanical interference with the drivetrain.",
-      },
-      {
-        title: "The variables that make Dhaka different",
-        why: "Urban density, traffic patterns, climate, road infrastructure and stop-start behaviour were captured as the inputs to the cycle.",
-      },
-    ],
-    value: {
-      body: "Vehicle evaluation, battery sizing and range estimation can start from Dhaka’s roads, and light-EV operators get a route to fleet telematics they can afford.",
-    },
-    proof: {
-      body: "The Dhaka Urban Drive Cycle is now ZEROOZEN’s engineering baseline for vehicle performance evaluation, battery pack sizing and range estimation, and the reference for future regulatory submissions.",
-    },
-    evidence: [
-      { value: "~90%", because: "lower unit cost than commercial loggers, because measurement had to fit the economics of a light EV." },
-      { value: "1 Hz", because: "RPM logging without touching the drivetrain, so the logger can ride on working vehicles." },
-    ],
-    reflection: "The resulting data became an engineering input for vehicle evaluation, battery sizing and range estimation.",
-    specs: [
-      "Laser light-gate tachometer",
-      "32-tooth gear, non-contact",
-      "1 Hz RPM logging",
-      "Drive cycle: Mirpur, Dhaka",
-      "Replaces NEDC / WLTC as design baseline",
+    notes: [
+      { label: "Sensor", value: "Laser light gate, 32 tooth gear" },
+      { label: "Logging", value: "RPM at 1 Hz, non-contact" },
+      { label: "Cost", value: "~90% below commercial OBD loggers" },
+      { label: "Data", value: "Mirpur, Dhaka" },
     ],
   },
 ];
 
-export const about = {
-  portrait: {
-    src: null,
-    alt: "Sanjid Hasan Al Rifat in the ZEROOZEN workshop",
-    caption: "Portrait: in the workshop",
-  } as Plate,
-  paragraphs: [
-    "I am an electrical engineer by training, but most of my work happens at the edges between disciplines.",
-    "I am interested in problems where engineering, customers, economics and execution meet. At ZEROOZEN, that means moving between field realities, product decisions, technical architecture, strategy and operations, depending on what the problem requires.",
-    "I like going deep enough to understand how something actually works, and staying close enough to reality to see whether it works for the person who ultimately has to use it.",
+/* ---------- Thinking (draft) ---------- */
+
+export type Note = { id: string; title: string; blocks: Block[] };
+
+export const thinking = {
+  title: "Thinking",
+  intro: "Notes on things I keep coming back to.",
+  notes: [
+    {
+      id: "intelligent-systems",
+      title: "Systems that change the system",
+      blocks: [
+        {
+          kind: "p",
+          text: "What moves me most is intelligence built into systems. The kind that can change how money works, how economies work, and take things somewhere people would not have thought of on their own.",
+        },
+        { kind: "gap", ask: "Why. What you have seen, read or built that made you think this, and where you think it leads." },
+      ],
+    },
+  ] as Note[],
+  more: "Topics still to write: customers, money and value, Bangladesh, mobility, failure, what makes something worth building.",
+};
+
+/* ---------- Life (draft) ---------- */
+
+export const life = {
+  title: "Life",
+  intro: "A few things that have nothing to do with work.",
+  people: {
+    heading: "People I keep coming back to",
+    list: [
+      { name: "Phil Knight", line: "Shoe Dog is his memoir. I admire him a lot." },
+      { name: "Haruki Murakami", line: "I follow his writing." },
+      { name: "Rumi", line: "I follow his writing." },
+      { name: "Albert Einstein", line: "My role model." },
+      { name: "Steve Wozniak", line: "For technical things, since my earliest days." },
+    ],
+  },
+  photos: [
+    { src: null, alt: "A photograph Sanjid took", caption: "Caption to come" },
+    { src: null, alt: "A photograph Sanjid took", caption: "Caption to come" },
+    { src: null, alt: "A photograph Sanjid took", caption: "Caption to come" },
+  ] as Plate[],
+  gaps: [
+    "What you do when you are not working.",
+    "Places that matter to you, with one line each.",
+    "Small rituals or things you notice.",
   ],
 };
 
-export type Role = {
-  org: string;
-  role: string;
-  period: string;
-  note: string;
-  confirm?: boolean;
+/* ---------- Now (draft) ---------- */
+
+export const now = {
+  title: "Now",
+  updated: "October 2026",
+  blocks: [
+    {
+      kind: "p",
+      text: "At ZEROOZEN, getting ZenPack into more vehicles, and building ZEN BMS, our own battery management system.",
+    },
+    { kind: "gap", ask: "What you are learning right now." },
+    { kind: "gap", ask: "What you are reading." },
+    { kind: "gap", ask: "What you are trying to understand." },
+  ] as Block[],
 };
 
-export const experience: Role[] = [
-  {
-    org: "ZEROOZEN Energy Ltd.",
-    role: "Co-Founder & Chief Product Officer",
-    period: "Feb 2024 – Present",
-    note: "Vehicles, batteries, charging, telematics and fleet software for light electric vehicles in Bangladesh. Investor engagement, budgeting and capital allocation across hardware, R&D and go-to-market. A global supply chain integrated with local manufacturing.",
-  },
-  {
-    org: "ZEROOZEN Energy Ltd.",
-    role: "Hardware Design Engineer",
-    period: "Sep 2023 – Jan 2024",
-    note: "Designed the first-generation 1.2 kW charger through 23 prototypes. Set the hardware design standards and component-sourcing processes later product lines were built on.",
-  },
-  {
-    org: "MenuKi",
-    role: "Co-Founder & Business Strategist",
-    period: "Oct 2022 – Dec 2023",
-    note: "QR-menu SaaS. Business strategy, budgeting and fundraising. Designed the pilot that onboarded 25 restaurants in two cities within five days.",
-  },
-  {
-    org: "Desktop IT",
-    role: "Business Operations Strategist",
-    period: "May 2023 – Jul 2023",
-    note: "Market research and growth strategy that contributed to a 12% revenue increase.",
-  },
-  {
-    org: "Ahsanullah University of Science & Technology",
-    role: "BSc, Electrical & Electronic Engineering",
-    period: "Apr 2018 – Dec 2022",
-    note: "Electrical systems, electronics and communication. Thesis: IntelliClass, an IoT smart classroom with RFID attendance, environmental sensing and cloud logging.",
-  },
-];
-
-export type Honor = { name: string; detail: string; year: string; confirm?: boolean };
-
-export const recognition: Honor[] = [
-  { name: "IDLC Startups Spotlight", detail: "ZEROOZEN featured as a high-potential EV deep-tech startup", year: "2025" },
-  { name: "Orange Corners Bangladesh", detail: "Cohort 2. Dutch Embassy-backed accelerator, BDT 4.5 lakh grant", year: "Year to confirm", confirm: true },
-  { name: "Aspire Leaders Program", detail: "Selected global participant in leadership development", year: "Year to confirm", confirm: true },
-];
+/* ---------- Contact ---------- */
 
 export const contact = {
-  heading: "Have a problem worth digging into?",
-  lede: "Tell me what is happening on the ground and what you want to change.",
-  cta: "Start a Conversation",
+  heading: "Write to me",
+  lede: "If something here made you curious, or you are working on a problem worth going closer to, I would like to hear about it.",
+  cta: "Send",
   /* Optional form backend (e.g. a Formspree endpoint). When empty, the form
    * opens the visitor's email app addressed to person.email. */
   endpoint: "",

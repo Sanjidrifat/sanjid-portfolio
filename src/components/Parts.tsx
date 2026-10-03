@@ -10,16 +10,6 @@ export function Confirm({ show }: { show?: boolean }) {
   );
 }
 
-export function TitleBlock({ sheet, name, refCode }: { sheet: string; name: string; refCode: string }) {
-  return (
-    <div className="titleblock mono">
-      <span className="accent">Sheet {sheet}</span>
-      <span className="name">{name}</span>
-      <span className="ref mute">{refCode}</span>
-    </div>
-  );
-}
-
 function Crops() {
   return (
     <>
@@ -41,30 +31,27 @@ export function Photo({ plate, path, tall }: { plate: PlateData; path: string; t
           <img src={plate.src} alt={plate.alt} loading="lazy" />
         ) : (
           <div className="placeholder" role="img" aria-label={`Placeholder for ${plate.alt}`}>
-            <div className="tag mono">
-              <span>Photo pending</span>
-              <span className="mute" style={{ textTransform: "none", letterSpacing: 0 }}>
-                public{path}
-              </span>
+            <div className="tag">
+              <span>Photo to come</span>
+              <span className="path">public{path}</span>
             </div>
           </div>
         )}
         <Crops />
       </div>
-      <figcaption className="mono">
+      <figcaption>
         <span>{plate.caption}</span>
       </figcaption>
     </figure>
   );
 }
 
-export function DiagramPlate({ children, caption, code }: { children: ReactNode; caption: string; code: string }) {
+export function DiagramPlate({ children, caption }: { children: ReactNode; caption: string }) {
   return (
     <figure className="plate diagram">
       <div className="frame">{children}</div>
-      <figcaption className="mono">
+      <figcaption>
         <span>{caption}</span>
-        <span className="mute">{code}</span>
       </figcaption>
     </figure>
   );
