@@ -171,6 +171,17 @@ L = [
   caption="A MenuKi card on a restaurant table during the pilot. Scan it and the menu opens on your phone. October 2023."),
 ]
 
+# How each photo is shown. colour where colour carries the story, mono where
+# grey calms a busy or harsh photo, asis where Sanjid already edited it.
+TONES = {
+ "colour": ["shariful-garage", "zengo-alfa-first-lot", "menuki-salt-and-pepper", "menuki-table-card",
+            "friends-bonfire", "cycle-mustard-field", "cycle-village-road", "zenwall-first-version",
+            "emk-center", "cells-on-bench-2026"],
+ "mono": ["figuring-it-out", "thingspeak-desk", "convocation-2025", "meet-bangladesh-expo",
+          "orange-corners-certificate"],
+ "asis": ["candid-bw", "cycle-dawn-road", "bicycle-night-street"],
+}
+
 COLLECTIONS = {
  "sanjid_identity": ["emk-center", "figuring-it-out", "candid-bw", "thingspeak-desk", "cells-on-bench-2026"],
  "field_reality": ["shariful-garage", "zengo-alfa-first-lot", "cycle-village-road"],
@@ -191,7 +202,9 @@ COLLECTIONS = {
 
 def main():
     out = os.path.join(ROOT, "public/images/library"); os.makedirs(out, exist_ok=True)
+    tone_of = {i: t for t, ids in TONES.items() for i in ids}
     for e in L:
+        e["tone"] = tone_of.get(e["id"], "colour")
         src = glob.glob(f"{UP}/{e['upload']}*/*.jpg")[0]
         im = ImageOps.exif_transpose(Image.open(src)).convert("RGB")
         e["camera_date"] = (Image.open(src).getexif().get_ifd(0x8769).get(36867) or None)

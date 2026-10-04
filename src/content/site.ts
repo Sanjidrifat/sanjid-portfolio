@@ -1,32 +1,35 @@
 /*
  * All copy for the site lives here.
  *
+ * The site is about Sanjid as a person first. The work is evidence of who he
+ * is, not the subject. Pages, in order: Home, About, What moves me, How I see
+ * problems, Work (with one page per story), Life, Notes, Now.
+ *
  * Sourcing rule: nothing on this site may claim a metric, customer, title,
  * outcome, memory, motivation or opinion that is not backed by Sanjid's own
- * materials or his own words. Where his story is not known yet, the copy
- * leaves a `gap` for him to fill instead of guessing.
+ * materials or his own words. Where his story is not known yet, the content
+ * keeps a `gap` block with the question for him. Gaps are never shown on the
+ * site. docs/content-checklist.md lists them for Sanjid.
  *
- * Writing rule: no em dashes, few colons or semicolons, no slogans.
+ * Writing rule: no em dashes, few colons or semicolons, no slogans, no
+ * sentences that tell the visitor Sanjid is interesting.
  *
- * SHOW_DRAFTS controls everything that is still waiting on Sanjid: the
- * Thinking, Life and Now pages, and the gap notes inside other pages.
- * Keep it true for previews. Set it to false for the public site.
- *
- * SHOW_CONFIRM_MARKS shows a small "to confirm" tag on lines that are a
- * reasonable reading of the sources but not stated in them.
+ * SHOW_UNFINISHED_PAGES shows pages that are still waiting on Sanjid's
+ * material (see `ready` on each page). False for the public site. The review
+ * preview is built with it set to true.
  */
 
-export const SHOW_DRAFTS = true;
-export const SHOW_CONFIRM_MARKS = true;
+export const SHOW_UNFINISHED_PAGES = false;
 
-/* Images: drop files into /public/images/... and set `src` to the path
- * (e.g. "/images/zengo-alfa/road.jpg"). While `src` is null the site draws
- * a placeholder naming the file it expects. */
 export type Plate = {
   src: string | null;
   alt: string;
   caption: string;
   shape?: "landscape" | "portrait" | "square";
+  /* colour: natural colour, used where colour carries the story.
+   * mono: black and white, used where it calms a busy or harsh photo.
+   * asis: Sanjid already edited it, leave it alone. */
+  tone?: "colour" | "mono" | "asis";
 };
 
 /* Sanjid's photos. Every description, caption and alt text lives in
@@ -37,7 +40,13 @@ import library from "./image-library.json";
 export function img(id: string): Plate {
   const e = library.images.find((i) => i.id === id);
   if (!e) throw new Error(`No image "${id}" in the image library`);
-  return { src: e.src, alt: e.alt, caption: e.caption, shape: e.orientation as Plate["shape"] };
+  return {
+    src: e.src,
+    alt: e.alt,
+    caption: e.caption,
+    shape: e.orientation as Plate["shape"],
+    tone: ((e as { tone?: string }).tone ?? "colour") as Plate["tone"],
+  };
 }
 
 export const person = {
@@ -56,31 +65,61 @@ export const person = {
   ],
 };
 
-/* A paragraph, a picture, or an open question for Sanjid. */
+/* A paragraph, a picture, a drawing, or an open question for Sanjid.
+ * Gaps are internal notes and never render. */
 export type Block =
-  | { kind: "p"; text: string; confirm?: boolean }
-  | { kind: "photo"; plate: Plate; path: string }
+  | { kind: "p"; text: string }
+  | { kind: "photo"; plate: Plate }
   | { kind: "diagram" }
   | { kind: "gap"; ask: string };
 
-/* ---------- Home ---------- */
+/* A link to another page of the site, by its hash id. */
+export type Door = { label: string; page: string };
+
+/* ---------- Home ----------
+ * Short scenes that follow one line Sanjid wrote: here is Sanjid, how he
+ * became this way, what he cares about, what he notices, how he works, and
+ * some of the things that happened along the way. Each scene gives one thing
+ * to see or read and a door to the page that goes deeper. */
 
 export const home = {
-  photo: img("figuring-it-out"),
   greeting: "Hi, I’m Sanjid.",
   line: "I like figuring things out.",
-  opening: [
-    "It usually starts small. Something doesn’t quite make sense to me, and I find I can’t put it down. A number that looks wrong. A machine that works on paper and struggles on the road. A person who needs one thing and keeps being handed another.",
-    "I trained as an electrical engineer. For the last few years, the questions I can’t put down have mostly lived on the roads of Dhaka. Electric three wheelers, the batteries inside them, the chargers they come back to, and the people who earn a living from all of it.",
-    "I still don’t understand most things as well as I’d like. What I have learned came from going closer to the problem than seemed necessary, and staying around after the work should have been finished.",
-    "This site is some of that. The work, the thinking, and a few things that have nothing to do with either.",
-  ],
-  workNote: "Most of it at ZEROOZEN Energy in Dhaka, where I am a co-founder and the Chief Product Officer.",
-  /* Sanjid's own description of how he works, from his brief. */
-  howIWork: [
-    "I usually start by going closer to the problem. I want to see what is actually happening.",
-    "Then I try to understand the person experiencing it, and ask what actually matters. Then I decide what is worth solving, and figure out what it would take to make it real.",
-    "And then I stay around long enough to see what happens after it leaves the lab.",
+  photo: img("figuring-it-out"),
+  intro:
+    "I trained as an electrical engineer. For the last few years most of my work has been on the roads of Dhaka, with electric three wheelers, the batteries inside them, the chargers they come back to, and the people who earn a living from all of it.",
+  origin: {
+    text: "I grew up by the Shitalakshya river in Narayanganj. I studied electrical and electronic engineering at AUST, co-founded MenuKi, a QR menu service for restaurants, and in 2023 joined ZEROOZEN, where I am now a co-founder and the Chief Product Officer.",
+    door: { label: "How I got here", page: "about" } as Door,
+  },
+  cares: {
+    text: [
+      "What moves me most is intelligence built into systems. The kind that can change how money works, how economies work, and take things somewhere people would not have thought of on their own.",
+      "For technical things I have followed Steve Wozniak since my earliest days. Einstein is my role model. I admire Phil Knight, and I follow Murakami and Rumi.",
+    ],
+    door: { label: "What moves me", page: "moves" } as Door,
+  },
+  notices: {
+    photo: img("shariful-garage"),
+    text: "I usually start by going closer to the problem. I want to see what is actually happening.",
+    door: { label: "How I see problems", page: "problems" } as Door,
+  },
+  works: {
+    photo: img("zengo-alfa-first-lot"),
+    text: [
+      "A three wheeler in Bangladesh is a working machine. Someone’s income depends on how much it can carry, how far it goes on a charge, how often it is off the road, and how much it cost in the first place.",
+      "ZENGO ALFA was designed around those numbers, measured here rather than borrowed from somewhere else. It launched in September 2025.",
+    ],
+    door: { label: "The ZENGO ALFA story", page: "zengo-alfa" } as Door,
+    more: { label: "All the work", page: "work" } as Door,
+  },
+  /* Real moments from Sanjid's photos, dated by the camera. */
+  along: [
+    { when: "July 2017", what: "Out riding", photo: img("cycle-village-road"), page: "life" },
+    { when: "October 2023", what: "The MenuKi pilot", photo: img("menuki-salt-and-pepper"), page: "about" },
+    { when: "March 2024", what: "The first ZenWall chargers on a wall", photo: img("zenwall-first-version"), page: "zen-charger" },
+    { when: "May 2025", what: "Convocation at AUST", photo: img("convocation-2025"), page: "about" },
+    { when: "April 2026", what: "Cells on the bench", photo: img("cells-on-bench-2026"), page: "now" },
   ],
 };
 
@@ -94,36 +133,109 @@ export const about = {
       kind: "p",
       text: "I grew up by the Shitalakshya river in Narayanganj. It is my hometown, and I still have a lot of affection for it.",
     },
-    { kind: "gap", ask: "A memory of growing up by the river, if you want to share one." },
+    { kind: "gap", ask: "Childhood in Narayanganj and the Shitalakshya. A place, a routine, a person, something you saw often." },
     { kind: "gap", ask: "Where curiosity began. The first thing you remember wanting to take apart or understand." },
-    {
-      kind: "p",
-      text: "For technical things, the person I have followed the longest is Steve Wozniak. I have followed him since my earliest days. If I had to name one role model, it would be Einstein.",
-    },
     { kind: "gap", ask: "Why electrical engineering. A choice, a default, or someone’s push." },
     {
       kind: "p",
       text: "I studied electrical and electronic engineering at Ahsanullah University of Science and Technology from 2018 to 2022. What I built there was small and practical. A low cost pulse oximeter, a cycloconverter, a circuit for automatic power factor improvement, audio sent over frequency division multiplexing. My thesis was IntelliClass, a classroom that took attendance by RFID, sensed its own environment and logged everything to the cloud.",
     },
-    { kind: "photo", plate: img("convocation-2025"), path: "" },
+    { kind: "gap", ask: "What early building taught you." },
+    { kind: "photo", plate: img("convocation-2025") },
     {
       kind: "p",
       text: "In 2022 I co-founded MenuKi, a QR menu service for restaurants. We designed a pilot that put it in 25 restaurants across two cities in five days.",
     },
-    { kind: "photo", plate: img("menuki-salt-and-pepper"), path: "" },
+    { kind: "photo", plate: img("menuki-salt-and-pepper") },
+    { kind: "gap", ask: "The first customer experience. The first time someone decided whether what you made was worth their money." },
     {
       kind: "p",
       text: "In 2023 I also spent a few months on business operations at Desktop IT, doing market research and planning for growth.",
     },
-    { kind: "gap", ask: "What the restaurant owners taught you. The first time someone decided whether something you made was worth their money." },
     {
       kind: "p",
       text: "Later in 2023 I joined ZEROOZEN as a hardware design engineer and spent most of that time on one charger, through twenty three versions. In February 2024 I became a co-founder and its Chief Product Officer. Since then the work has spread from circuit boards to vehicles, batteries, data, supply chains, investors and a fleet of more than 400 vehicles.",
     },
-    { kind: "photo", plate: img("thingspeak-desk"), path: "" },
-    { kind: "gap", ask: "A moment when something technically correct turned out not to be useful." },
-    { kind: "gap", ask: "What co-founding taught you about ownership that a job never did." },
+    { kind: "photo", plate: img("thingspeak-desk") },
+    { kind: "gap", ask: "What co-founding changed about ownership." },
   ] as Block[],
+};
+
+/* ---------- What moves me ---------- */
+
+export const moves = {
+  title: "What moves me",
+  ready: false,
+  blocks: [
+    {
+      kind: "p",
+      text: "What moves me most is intelligence built into systems. The kind that can change how money works, how economies work, and take things somewhere people would not have thought of on their own.",
+    },
+    { kind: "gap", ask: "Why intelligent systems move you. What you saw, read or built that made you think this, and where you think it goes." },
+  ] as Block[],
+  peopleHeading: "People I keep coming back to",
+  people: [
+    { name: "Steve Wozniak", line: "For technical things, since my earliest days." },
+    { name: "Albert Einstein", line: "My role model." },
+    { name: "Phil Knight", line: "Shoe Dog is his memoir. I admire him a lot." },
+    { name: "Haruki Murakami", line: "I follow his writing." },
+    { name: "Rumi", line: "I follow his writing." },
+  ],
+};
+
+/* ---------- How I see problems ----------
+ * Sanjid's own description of how he works, each step paired with one place
+ * in the work where it shows. The examples use facts from the stories only. */
+
+export const problems = {
+  title: "How I see problems",
+  ready: false,
+  steps: [
+    {
+      text: "I usually start by going closer to the problem. I want to see what is actually happening.",
+      seen: "Bangladesh had no drive cycle of its own, so before sizing batteries or estimating range we measured one in Mirpur.",
+      door: { label: "ZENBOX and the Dhaka Urban Drive Cycle", page: "zenbox" } as Door,
+    },
+    {
+      text: "Then I try to understand the person experiencing it, and ask what actually matters.",
+      seen: "For a three wheeler driver, charging decides when the vehicle can go back to work. The charger started from that working day, not from the converter.",
+      door: { label: "ZEN Series Charger", page: "zen-charger" } as Door,
+    },
+    {
+      text: "Then I decide what is worth solving, and figure out what it would take to make it real.",
+      seen: "Before designing ZENGO ALFA, I built a model of the powertrain from local operating conditions. The motor and the battery came out of that model.",
+      door: { label: "ZENGO ALFA", page: "zengo-alfa" } as Door,
+    },
+    {
+      text: "And then I stay around long enough to see what happens after it leaves the lab.",
+      seen: "ZenPack ran 1.2 lakh km on our own driving cycle before it went to customers, because laboratory validation was not enough.",
+      door: { label: "ZenPack", page: "zenpack" } as Door,
+    },
+  ],
+  gaps: ["One time you learned that technically correct does not always mean useful. This becomes the centre of the page."],
+};
+
+/* ---------- Work ---------- */
+
+export type Story = {
+  id: string;
+  name: string;
+  dek: string;
+  when: string;
+  diagram: "vehicle" | "pack" | "charger" | "drivecycle";
+  diagramCaption: string;
+  blocks: Block[];
+  /* Dated facts and figures, set small like notes in a margin. */
+  notes: { label: string; value: string }[];
+};
+
+/* No photo on the Work index: Home already shows Shariful Garage, and each
+ * story carries its own pictures. */
+export const work = {
+  title: "Work",
+  recordHeading: "Where I have worked and studied",
+  recognitionHeading: "Recognition",
+  intro: "A few things I have spent a lot of time trying to make work. All of them at ZEROOZEN, all of them for people who earn a living on Bangladesh’s roads.",
 };
 
 export type Entry = { when: string; what: string; where: string };
@@ -141,31 +253,11 @@ export const recognition: Entry[] = [
   { when: "Cohort 2", what: "Accelerator backed by the Dutch Embassy", where: "Orange Corners Bangladesh" },
 ];
 
-/* ---------- Work ---------- */
-
-export type Story = {
-  id: string;
-  name: string;
-  dek: string;
-  when: string;
-  diagram: "vehicle" | "pack" | "charger" | "drivecycle";
-  diagramCaption: string;
-  blocks: Block[];
-  /* Dated facts and figures, set small like notes in a margin. */
-  notes: { label: string; value: string; confirm?: boolean }[];
-};
-
-export const work = {
-  photo: img("shariful-garage"),
-  title: "Work",
-  intro: "A few things I have spent a lot of time trying to make work. All of them at ZEROOZEN, all of them for people who earn a living on Bangladesh’s roads.",
-};
-
 export const stories: Story[] = [
   {
     id: "zengo-alfa",
     name: "ZENGO ALFA",
-    dek: "An electric three wheeler, and the arithmetic of the person driving it.",
+    dek: "An electric three wheeler for people who earn their living with one.",
     when: "Launched September 2025",
     diagram: "vehicle",
     diagramCaption: "Side elevation, schematic. Where the battery, motor and GPS sit.",
@@ -173,11 +265,6 @@ export const stories: Story[] = [
       {
         kind: "p",
         text: "A three wheeler in Bangladesh is a working machine. Someone’s income depends on how much it can carry, how far it goes on a charge, how often it is off the road, and how much it cost in the first place.",
-      },
-      {
-        kind: "photo",
-        plate: { src: null, alt: "A three wheeler at work on a road in Bangladesh", caption: "On the road" },
-        path: "/images/zengo-alfa/road.jpg",
       },
       {
         kind: "p",
@@ -196,8 +283,8 @@ export const stories: Story[] = [
         kind: "p",
         text: "ZENGO ALFA launched in September 2025. Since then it has done more than 2.8 lakh km in field operation and brought in over BDT 3.5 million in its first quarter. The electrical architecture underneath is meant to outlast this one vehicle. It is the base for the commercial and passenger platforms that come next.",
       },
-      { kind: "photo", plate: img("zengo-alfa-first-lot"), path: "" },
-      { kind: "gap", ask: "A moment from the field after launch. Something a driver said, or something that surprised you. A photo of a ZENGO ALFA at work on the road would also help." },
+      { kind: "photo", plate: img("zengo-alfa-first-lot") },
+      { kind: "gap", ask: "A moment from the field after launch. Something a driver said, or something that surprised you." },
     ],
     notes: [
       { label: "Launched", value: "September 2025" },
@@ -210,7 +297,7 @@ export const stories: Story[] = [
   {
     id: "zenpack",
     name: "ZenPack",
-    dek: "What a battery has to do for someone to make money with it.",
+    dek: "A battery pack for commercial electric vehicles, specified for conditions here.",
     when: "In deployment since 2026",
     diagram: "pack",
     diagramCaption: "Pack architecture, schematic. The master and slave BMS is ZEN BMS, still in development.",
@@ -222,11 +309,6 @@ export const stories: Story[] = [
       {
         kind: "p",
         text: "Most packs arrive with a specification written for someone else’s conditions. We wanted to start from ours. So we wrote down what the pack had to do here first, and only then chose the architecture and set the BMS requirements to meet it.",
-      },
-      {
-        kind: "photo",
-        plate: { src: null, alt: "ZenPack on the workshop bench", caption: "ZenPack on the bench" },
-        path: "/images/zenpack/bench.jpg",
       },
       {
         kind: "p",
@@ -254,7 +336,7 @@ export const stories: Story[] = [
   {
     id: "zen-charger",
     name: "ZEN Series Charger",
-    dek: "Twenty three versions of one small box.",
+    dek: "A charger for three wheeler batteries, built over twenty three versions.",
     when: "2023 to 2024",
     diagram: "charger",
     diagramCaption: "Power stage, block diagram, and the four stage charging profile.",
@@ -285,12 +367,8 @@ export const stories: Story[] = [
         kind: "p",
         text: "It reaches 87 percent efficiency at peak load. The habits it forced on us, the hardware design standards and the way we source components, became the starting point for every ZEROOZEN product after it.",
       },
-      { kind: "photo", plate: img("zenwall-first-version"), path: "" },
-      {
-        kind: "p",
-        text: "What still interests me about it is how a small piece of power electronics ends up sitting between the grid, the battery, the vehicle and someone’s livelihood.",
-      },
-      { kind: "photo", plate: img("meet-bangladesh-expo"), path: "" },
+      { kind: "photo", plate: img("zenwall-first-version") },
+      { kind: "photo", plate: img("meet-bangladesh-expo") },
     ],
     notes: [
       { label: "Prototypes", value: "23 iterations" },
@@ -304,7 +382,7 @@ export const stories: Story[] = [
   {
     id: "zenbox",
     name: "ZENBOX and the Dhaka Urban Drive Cycle",
-    dek: "Measuring Dhaka before designing for it.",
+    dek: "A low cost data logger, and the drive cycle we measured with it.",
     when: "Mirpur, Dhaka",
     diagram: "drivecycle",
     diagramCaption: "An illustrative stop and start trace, and the light gate over the 32 tooth gear.",
@@ -316,11 +394,6 @@ export const stories: Story[] = [
       {
         kind: "p",
         text: "Bangladesh did not have a drive cycle of its own. So instead of adjusting our assumptions around someone else’s standard, we started collecting our own.",
-      },
-      {
-        kind: "photo",
-        plate: { src: null, alt: "Traffic in Mirpur, Dhaka", caption: "Mirpur" },
-        path: "/images/zenbox/mirpur.jpg",
       },
       {
         kind: "p",
@@ -346,44 +419,11 @@ export const stories: Story[] = [
   },
 ];
 
-/* ---------- Thinking (draft) ---------- */
-
-export type Note = { id: string; title: string; blocks: Block[] };
-
-export const thinking = {
-  title: "Thinking",
-  intro: "Notes on things I keep coming back to.",
-  notes: [
-    {
-      id: "intelligent-systems",
-      title: "Systems that change the system",
-      blocks: [
-        {
-          kind: "p",
-          text: "What moves me most is intelligence built into systems. The kind that can change how money works, how economies work, and take things somewhere people would not have thought of on their own.",
-        },
-        { kind: "gap", ask: "Why. What you have seen, read or built that made you think this, and where you think it leads." },
-      ],
-    },
-  ] as Note[],
-  more: "Topics still to write: customers, money and value, Bangladesh, mobility, failure, what makes something worth building.",
-};
-
-/* ---------- Life (draft) ---------- */
+/* ---------- Life ---------- */
 
 export const life = {
   title: "Life",
   intro: "A few things that have nothing to do with work.",
-  people: {
-    heading: "People I keep coming back to",
-    list: [
-      { name: "Phil Knight", line: "Shoe Dog is his memoir. I admire him a lot." },
-      { name: "Haruki Murakami", line: "I follow his writing." },
-      { name: "Rumi", line: "I follow his writing." },
-      { name: "Albert Einstein", line: "My role model." },
-      { name: "Steve Wozniak", line: "For technical things, since my earliest days." },
-    ],
-  },
   photos: [
     img("friends-bonfire"),
     img("cycle-village-road"),
@@ -393,16 +433,26 @@ export const life = {
   ] as Plate[],
   gaps: [
     "A bicycle shows up in four of the photos you sent. A line or two about riding, if it matters to you.",
-    "What you do when you are not working.",
     "Places that matter to you, with one line each.",
-    "Small rituals or things you notice.",
   ],
 };
 
-/* ---------- Now (draft) ---------- */
+/* ---------- Notes ---------- */
+
+export const notes = {
+  title: "Notes",
+  ready: false,
+  intro: "Short pieces of thinking, dated. Longer ones are on Substack.",
+  substack: "https://substack.com/@sanjidrifat1",
+  items: [] as { title: string; date: string; url: string }[],
+  gaps: ["Which Substack posts, if any, should appear here."],
+};
+
+/* ---------- Now ---------- */
 
 export const now = {
   title: "Now",
+  ready: false,
   updated: "October 2026",
   photo: img("cells-on-bench-2026"),
   blocks: [
@@ -416,13 +466,9 @@ export const now = {
   ] as Block[],
 };
 
-/* ---------- Contact ---------- */
+/* ---------- Write to me: the end of Home, and every footer ---------- */
 
 export const contact = {
   heading: "Write to me",
-  lede: "If something here made you curious, or you are working on a problem worth going closer to, I would like to hear about it.",
-  cta: "Send",
-  /* Optional form backend (e.g. a Formspree endpoint). When empty, the form
-   * opens the visitor's email app addressed to person.email. */
-  endpoint: "",
+  lede: "If something here made you curious, I would like to hear from you.",
 };

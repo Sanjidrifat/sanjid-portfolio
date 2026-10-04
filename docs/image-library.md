@@ -7,17 +7,28 @@ Eighteen photos Sanjid shared on 3 October 2026 (sixteen, then two from the Menu
 | Page | Photo | Why it is there |
 |---|---|---|
 | Home, under the greeting | figuring-it-out | The opening line made literal. Sanjid's own caption for it is about trying to figure something out. |
+| Home, what he notices | shariful-garage | Going closer to the problem: a real garage and the first partner. |
+| Home, how he works | zengo-alfa-first-lot | Opens the door to the ZENGO ALFA story, where it appears again at the launch. |
+| Home, along the way | cycle-village-road, menuki-salt-and-pepper, zenwall-first-version, convocation-2025, cells-on-bench-2026 | Small dated prints, each linking to the page where the moment belongs. |
 | About, top | emk-center | The clearest picture of his face, so a first-time visitor knows who they are reading about. |
 | About, after university | convocation-2025 | Closes the AUST chapter. |
 | About, after MenuKi | menuki-salt-and-pepper | The first customer of something he co-founded, before ZEROOZEN. |
 | About, after joining ZEROOZEN | thingspeak-desk | The start of the ZEROOZEN years. Hardware and data on one desk. |
-| About, under Recognition | orange-corners-certificate | Evidence for the Orange Corners line, kept small. |
-| Work, top | shariful-garage | The world the work is for. A real garage, real vehicles, the first partner. |
 | ZENGO ALFA, after the launch | zengo-alfa-first-lot | Deployment as it actually looked: people pushing vehicles into a container after midnight. |
 | ZEN Series Charger, after the build | zenwall-first-version | The charger leaving the bench for a real wall. |
 | ZEN Series Charger, end | meet-bangladesh-expo | Where the charger work led: a product line shown in public. |
 | Life | friends-bonfire, cycle-village-road, cycle-dawn-road, candid-bw, cycle-mustard-field | Friends, riding, a quiet moment. No products. |
 | Now | cells-on-bench-2026 | The most recent photo, and Now is about batteries. |
+
+Not used yet: menuki-table-card, orange-corners-certificate, bicycle-night-street.
+
+## Colour
+
+The site itself is black and white, but photos keep their own colour where colour carries the story: the field, customers, life. Each photo has a `tone` in `scripts/image_library.py`.
+
+- **colour:** shown as taken. Garage, ZENGO ALFA, MenuKi, ZenWall, cells, EMK Center, friends, riding.
+- **mono:** shown in grey. The workbench, desk, convocation, expo stand and certificate, where colour adds noise rather than information.
+- **asis:** already black and white or toned by Sanjid, so left alone.
 | Not used | bicycle-night-street | Same theme as the dawn road photo but low resolution. |
 | Not used yet | menuki-table-card | Good detail, but About already has the handover from the same evening. |
 
