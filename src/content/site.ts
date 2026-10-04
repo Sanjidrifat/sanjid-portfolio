@@ -30,6 +30,8 @@ export type Plate = {
    * mono: black and white, used where it calms a busy or harsh photo.
    * asis: Sanjid already edited it, leave it alone. */
   tone?: "colour" | "mono" | "asis";
+  /* Width over height, so photos in a row can share one height. */
+  ratio?: number;
 };
 
 /* Sanjid's photos. Every description, caption and alt text lives in
@@ -46,6 +48,7 @@ export function img(id: string): Plate {
     caption: e.caption,
     shape: e.orientation as Plate["shape"],
     tone: ((e as { tone?: string }).tone ?? "colour") as Plate["tone"],
+    ratio: e.width / e.height,
   };
 }
 
@@ -69,12 +72,28 @@ export const person = {
  * Gaps are internal notes and never render. */
 export type Block =
   | { kind: "p"; text: string }
-  | { kind: "photo"; plate: Plate }
+  | { kind: "photo"; plate: Plate; place?: Place }
+  | { kind: "pair"; plates: Plate[] }
   | { kind: "diagram" }
   | { kind: "gap"; ask: string };
 
+/* Where a photo sits. Default: in the reading column. left and right hang
+ * beside the text on a wide screen. wide steps out of the column. bleed runs
+ * edge to edge on a dark band. A pair sets two photos side by side at the
+ * same height. */
+export type Place = "column" | "left" | "right" | "wide" | "bleed";
+
 /* A link to another page of the site, by its hash id. */
 export type Door = { label: string; page: string };
+
+/* People Sanjid keeps coming back to, in his words. Home and What moves me. */
+export const people = [
+  { name: "Steve Wozniak", line: "For technical things, since my earliest days." },
+  { name: "Albert Einstein", line: "My role model." },
+  { name: "Phil Knight", line: "Shoe Dog is his memoir. I admire him a lot." },
+  { name: "Haruki Murakami", line: "I follow his writing." },
+  { name: "Rumi", line: "I follow his writing." },
+];
 
 /* ---------- Home ----------
  * Short scenes that follow one line Sanjid wrote: here is Sanjid, how he
@@ -93,10 +112,8 @@ export const home = {
     door: { label: "How I got here", page: "about" } as Door,
   },
   cares: {
-    text: [
-      "What moves me most is intelligence built into systems. The kind that can change how money works, how economies work, and take things somewhere people would not have thought of on their own.",
-      "For technical things I have followed Steve Wozniak since my earliest days. Einstein is my role model. I admire Phil Knight, and I follow Murakami and Rumi.",
-    ],
+    /* Followed on Home by the people list, in his words. */
+    text: "What moves me most is intelligence built into systems. The kind that can change how money works, how economies work, and take things somewhere people would not have thought of on their own.",
     door: { label: "What moves me", page: "moves" } as Door,
   },
   notices: {
@@ -140,12 +157,12 @@ export const about = {
       text: "I studied electrical and electronic engineering at Ahsanullah University of Science and Technology from 2018 to 2022. What I built there was small and practical. A low cost pulse oximeter, a cycloconverter, a circuit for automatic power factor improvement, audio sent over frequency division multiplexing. My thesis was IntelliClass, a classroom that took attendance by RFID, sensed its own environment and logged everything to the cloud.",
     },
     { kind: "gap", ask: "What early building taught you." },
-    { kind: "photo", plate: img("convocation-2025") },
+    { kind: "photo", plate: img("convocation-2025"), place: "right" },
     {
       kind: "p",
       text: "In 2022 I co-founded MenuKi, a QR menu service for restaurants. We designed a pilot that put it in 25 restaurants across two cities in five days.",
     },
-    { kind: "photo", plate: img("menuki-salt-and-pepper") },
+    { kind: "photo", plate: img("menuki-salt-and-pepper"), place: "left" },
     { kind: "gap", ask: "The first customer experience. The first time someone decided whether what you made was worth their money." },
     {
       kind: "p",
@@ -155,7 +172,7 @@ export const about = {
       kind: "p",
       text: "Later in 2023 I joined ZEROOZEN as a hardware design engineer and spent most of that time on one charger, through twenty three versions. In February 2024 I became a co-founder and its Chief Product Officer. Since then the work has spread from circuit boards to vehicles, batteries, data, supply chains, investors and a fleet of more than 400 vehicles.",
     },
-    { kind: "photo", plate: img("thingspeak-desk") },
+    { kind: "photo", plate: img("thingspeak-desk"), place: "wide" },
     { kind: "gap", ask: "What co-founding changed about ownership." },
   ] as Block[],
 };
@@ -173,13 +190,7 @@ export const moves = {
     { kind: "gap", ask: "Why intelligent systems move you. What you saw, read or built that made you think this, and where you think it goes." },
   ] as Block[],
   peopleHeading: "People I keep coming back to",
-  people: [
-    { name: "Steve Wozniak", line: "For technical things, since my earliest days." },
-    { name: "Albert Einstein", line: "My role model." },
-    { name: "Phil Knight", line: "Shoe Dog is his memoir. I admire him a lot." },
-    { name: "Haruki Murakami", line: "I follow his writing." },
-    { name: "Rumi", line: "I follow his writing." },
-  ],
+  people,
 };
 
 /* ---------- How I see problems ----------
@@ -281,7 +292,7 @@ export const stories: Story[] = [
         kind: "p",
         text: "ZENGO ALFA launched in September 2025. Since then it has done more than 2.8 lakh km in field operation and brought in over BDT 3.5 million in its first quarter. The electrical architecture underneath is meant to outlast this one vehicle. It is the base for the commercial and passenger platforms that come next.",
       },
-      { kind: "photo", plate: img("zengo-alfa-first-lot") },
+      { kind: "photo", plate: img("zengo-alfa-first-lot"), place: "bleed" },
       { kind: "gap", ask: "A moment from the field after launch. Something a driver said, or something that surprised you." },
     ],
     notes: [
@@ -365,8 +376,7 @@ export const stories: Story[] = [
         kind: "p",
         text: "It reaches 87 percent efficiency at peak load. The habits it forced on us, the hardware design standards and the way we source components, became the starting point for every ZEROOZEN product after it.",
       },
-      { kind: "photo", plate: img("zenwall-first-version") },
-      { kind: "photo", plate: img("meet-bangladesh-expo") },
+      { kind: "pair", plates: [img("zenwall-first-version"), img("meet-bangladesh-expo")] },
     ],
     notes: [
       { label: "Prototypes", value: "23 iterations" },
@@ -422,13 +432,12 @@ export const stories: Story[] = [
 export const life = {
   title: "Life",
   intro: "A few things that have nothing to do with work.",
-  photos: [
-    img("friends-bonfire"),
-    img("cycle-village-road"),
-    img("cycle-dawn-road"),
-    img("candid-bw"),
-    img("cycle-mustard-field"),
-  ] as Plate[],
+  /* Rows of prints set to one height, like a contact sheet. */
+  rows: [
+    [img("friends-bonfire"), img("cycle-village-road")],
+    [img("candid-bw"), img("cycle-dawn-road")],
+    [img("cycle-mustard-field")],
+  ] as Plate[][],
   gaps: [
     "A bicycle shows up in four of the photos you sent. A line or two about riding, if it matters to you.",
     "Places that matter to you, with one line each.",

@@ -8,6 +8,7 @@ import {
   moves,
   notes,
   now,
+  people,
   person,
   problems,
   recognition,
@@ -19,7 +20,7 @@ import {
   type Entry,
   type Story,
 } from "./content/site";
-import { DiagramPlate, Photo } from "./components/Parts";
+import { DiagramPlate, Photo, PhotoRow } from "./components/Parts";
 import { Diagram } from "./components/Diagrams";
 
 /* Pages are addressed by a plain hash token (#about, #zenpack) so the site
@@ -140,7 +141,8 @@ function Blocks({ blocks, story }: { blocks: Block[]; story?: Story }) {
     <>
       {blocks.map((b, i) => {
         if (b.kind === "p") return <p key={i}>{b.text}</p>;
-        if (b.kind === "photo") return <Photo key={i} plate={b.plate} className="figure" />;
+        if (b.kind === "photo") return <Photo key={i} plate={b.plate} place={b.place} className="figure" />;
+        if (b.kind === "pair") return <PhotoRow key={i} plates={b.plates} className="figure pair" />;
         if (b.kind === "diagram" && story)
           return (
             <div key={i} className="figure">
@@ -189,48 +191,59 @@ function Home() {
   const { origin, cares, notices, works } = home;
   return (
     <article className="home">
-      <header className="col hello">
-        <h1>
-          <span>{home.greeting}</span>
-          <span className="soft">{home.line}</span>
-        </h1>
+      <header className="col-wide hero">
+        <div className="hero-text">
+          <h1>
+            <span>{home.greeting}</span>
+            <span className="soft">{home.line}</span>
+          </h1>
+          <p className="first">{home.intro}</p>
+        </div>
+        <Photo plate={home.photo} className="hero-photo" />
       </header>
-      <div className="col">
-        <Photo plate={home.photo} />
-      </div>
-      <section className="col prose scene">
-        <p className="first">{home.intro}</p>
-      </section>
 
-      <section className="col prose scene">
-        <p>{origin.text}</p>
+      <section className="col scene">
+        <p className="statement">{origin.text}</p>
         <DoorLink door={origin.door} />
       </section>
 
-      <section className="col prose scene">
-        {cares.text.map((t) => (
-          <p key={t}>{t}</p>
-        ))}
-        <DoorLink door={cares.door} />
+      <section className="col-wide scene cares">
+        <div className="cares-text">
+          <p className="statement">{cares.text}</p>
+          <DoorLink door={cares.door} />
+        </div>
+        <ul className="names" aria-label="People I keep coming back to">
+          {people.map((p) => (
+            <li key={p.name}>
+              <span className="who">{p.name}</span>
+              <span className="why">{p.line}</span>
+            </li>
+          ))}
+        </ul>
       </section>
 
-      <section className="col prose scene">
+      <section className="col scene notice">
         <p>{notices.text}</p>
         <DoorLink door={notices.door} />
       </section>
 
-      <section className="col prose scene">
-        <Photo plate={works.photo} />
-        {works.text.map((t) => (
-          <p key={t}>{t}</p>
-        ))}
-        <p className="doors">
-          <DoorLink door={works.door} />
-          <DoorLink door={works.more} />
-        </p>
+      <section className="scene band">
+        <div className="col-wide band-inner">
+          <Photo plate={works.photo} className="band-photo" />
+          <div className="band-text">
+            {works.text.map((t) => (
+              <p key={t}>{t}</p>
+            ))}
+            <p className="doors">
+              <DoorLink door={works.door} />
+              <DoorLink door={works.more} />
+            </p>
+          </div>
+        </div>
       </section>
 
-      <section className="col-wide scene along" aria-label="Along the way">
+      <section className="scene along" aria-labelledby="along-head">
+        <h2 id="along-head" className="col-wide">Along the way</h2>
         <ol>
           {home.along.map((m) => (
             <li key={m.when}>
@@ -251,7 +264,7 @@ function Home() {
         </section>
       )}
 
-      <section className="col prose scene write">
+      <section className="col scene write">
         <h2>{contact.heading}</h2>
         <p>{contact.lede}</p>
         <Links />
@@ -260,13 +273,23 @@ function Home() {
   );
 }
 
+/* A page that opens with its title beside a photo on a wide screen. */
+function PhotoHead({ title, plate, children }: { title: string; plate: Parameters<typeof Photo>[0]["plate"]; children?: React.ReactNode }) {
+  return (
+    <header className="col-wide photo-head">
+      <div>
+        <h1>{title}</h1>
+        {children}
+      </div>
+      <Photo plate={plate} />
+    </header>
+  );
+}
+
 function About() {
   return (
     <article>
-      <PageHead title={about.title} />
-      <div className="col">
-        <Photo plate={about.portrait} className="lead" />
-      </div>
+      <PhotoHead title={about.title} plate={about.portrait} />
       <div className="col prose">
         <Blocks blocks={about.blocks} />
       </div>
@@ -339,6 +362,10 @@ function WorkIndex() {
 }
 
 function StoryPage({ story }: { story: Story }) {
+  /* Edge to edge photos close the story, after the margin notes end. */
+  const isBleed = (b: Block) => b.kind === "photo" && b.place === "bleed";
+  const body = story.blocks.filter((b) => !isBleed(b));
+  const tail = story.blocks.filter(isBleed);
   const i = stories.indexOf(story);
   const next = stories[(i + 1) % stories.length];
   return (
@@ -349,7 +376,7 @@ function StoryPage({ story }: { story: Story }) {
       </PageHead>
       <div className="col-wide story-body">
         <div className="prose">
-          <Blocks blocks={story.blocks} story={story} />
+          <Blocks blocks={body} story={story} />
         </div>
         <aside className="margin" aria-label="Facts and figures">
           <dl>
@@ -362,6 +389,13 @@ function StoryPage({ story }: { story: Story }) {
           </dl>
         </aside>
       </div>
+      {tail.map((b, k) =>
+        b.kind === "photo" ? (
+          <div key={k} className="band band-photo-only">
+            <Photo plate={b.plate} />
+          </div>
+        ) : null,
+      )}
       <nav className="col story-next" aria-label="More work">
         <a href="#work">All the work</a>
         <a href={`#${next.id}`}>Next, {next.name}</a>
@@ -376,9 +410,9 @@ function Life() {
       <PageHead title={life.title}>
         <p className="lede">{life.intro}</p>
       </PageHead>
-      <div className="col-wide photo-row">
-        {life.photos.map((p) => (
-          <Photo key={p.src} plate={p} />
+      <div className="col-wide life-rows">
+        {life.rows.map((row, k) => (
+          <PhotoRow key={k} plates={row} />
         ))}
       </div>
     </article>
@@ -410,11 +444,10 @@ function Notes() {
 function Now() {
   return (
     <article>
-      <PageHead title={now.title}>
+      <PhotoHead title={now.title} plate={now.photo}>
         <p className="dateline">Updated {now.updated}</p>
-      </PageHead>
+      </PhotoHead>
       <div className="col prose">
-        <Photo plate={now.photo} className="figure" />
         <Blocks blocks={now.blocks} />
       </div>
     </article>
