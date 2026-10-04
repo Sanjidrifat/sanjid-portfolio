@@ -100,7 +100,6 @@ export const home = {
     door: { label: "What moves me", page: "moves" } as Door,
   },
   notices: {
-    photo: img("shariful-garage"),
     text: "I usually start by going closer to the problem. I want to see what is actually happening.",
     door: { label: "How I see problems", page: "problems" } as Door,
   },
@@ -229,8 +228,7 @@ export type Story = {
   notes: { label: string; value: string }[];
 };
 
-/* No photo on the Work index: Home already shows Shariful Garage, and each
- * story carries its own pictures. */
+/* No photo on the Work index: each story carries its own pictures. */
 export const work = {
   title: "Work",
   recordHeading: "Where I have worked and studied",

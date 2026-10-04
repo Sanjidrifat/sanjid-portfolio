@@ -252,12 +252,6 @@ h2 {
   line-height: 1.5;
 }
 
-/* A photo a little wider than the text, with its words underneath. */
-.wide-photo {
-  max-width: calc(860px + 2 * var(--gutter));
-  margin-bottom: 32px;
-}
-
 /* Some of the things that happened along the way: small prints in a row
  * on a wide screen, a list on a phone. */
 .along ol {

@@ -214,14 +214,9 @@ function Home() {
         <DoorLink door={cares.door} />
       </section>
 
-      <section className="scene">
-        <div className="col-wide wide-photo">
-          <Photo plate={notices.photo} />
-        </div>
-        <div className="col prose">
-          <p>{notices.text}</p>
-          <DoorLink door={notices.door} />
-        </div>
+      <section className="col prose scene">
+        <p>{notices.text}</p>
+        <DoorLink door={notices.door} />
       </section>
 
       <section className="col prose scene">

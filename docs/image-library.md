@@ -7,7 +7,6 @@ Eighteen photos Sanjid shared on 3 October 2026 (sixteen, then two from the Menu
 | Page | Photo | Why it is there |
 |---|---|---|
 | Home, under the greeting | figuring-it-out | The opening line made literal. Sanjid's own caption for it is about trying to figure something out. |
-| Home, what he notices | shariful-garage | Going closer to the problem: a real garage and the first partner. |
 | Home, how he works | zengo-alfa-first-lot | Opens the door to the ZENGO ALFA story, where it appears again at the launch. |
 | Home, along the way | cycle-village-road, menuki-salt-and-pepper, zenwall-first-version, convocation-2025, cells-on-bench-2026 | Small dated prints, each linking to the page where the moment belongs. |
 | About, top | emk-center | The clearest picture of his face, so a first-time visitor knows who they are reading about. |
@@ -20,7 +19,7 @@ Eighteen photos Sanjid shared on 3 October 2026 (sixteen, then two from the Menu
 | Life | friends-bonfire, cycle-village-road, cycle-dawn-road, candid-bw, cycle-mustard-field | Friends, riding, a quiet moment. No products. |
 | Now | cells-on-bench-2026 | The most recent photo, and Now is about batteries. |
 
-Not used yet: menuki-table-card, orange-corners-certificate, bicycle-night-street.
+Not used: shariful-garage (removed at Sanjid's request, 4 October 2026), menuki-table-card, orange-corners-certificate, bicycle-night-street.
 
 ## Colour
 
