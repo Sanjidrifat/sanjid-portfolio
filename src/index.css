@@ -19,8 +19,8 @@
   --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
 
   --gutter: 16px;
-  --col: 640px;
-  --wide: 1040px;
+  --col: 720px;
+  --wide: 1240px;
 
   color-scheme: light;
 }
@@ -28,6 +28,11 @@
 @media (min-width: 700px) {
   :root {
     --gutter: 32px;
+  }
+}
+@media (min-width: 1100px) {
+  :root {
+    --gutter: 48px;
   }
 }
 
@@ -88,11 +93,15 @@ a {
   margin-inline: auto;
   padding-inline: var(--gutter);
 }
-.col {
-  max-width: calc(var(--col) + 2 * var(--gutter));
-}
+/* Every page shares one left edge. Text keeps a readable measure inside it,
+ * and the space to its right is where photos and notes sit. */
+.col,
 .col-wide {
   max-width: calc(var(--wide) + 2 * var(--gutter));
+}
+.col > *,
+.prose > * {
+  max-width: var(--col);
 }
 
 /* ---------- header and footer ---------- */
@@ -550,20 +559,13 @@ h2 {
 .story-body {
   display: grid;
   gap: 40px;
-  max-width: calc(var(--col) + 2 * var(--gutter));
 }
 
 /* On wide screens the facts sit in a margin beside the text. */
 @media (min-width: 1000px) {
-  .story .page-head,
-  .story .story-next {
-    max-width: calc(var(--col) + 240px + 64px + 2 * var(--gutter));
-    padding-right: calc(var(--gutter) + 304px);
-  }
   .story-body {
-    grid-template-columns: minmax(0, var(--col)) 240px;
-    column-gap: 64px;
-    max-width: calc(var(--col) + 240px + 64px + 2 * var(--gutter));
+    grid-template-columns: minmax(0, var(--col)) minmax(240px, 320px);
+    column-gap: clamp(64px, 8vw, 120px);
   }
   .margin {
     position: sticky;
@@ -724,8 +726,8 @@ img.tone-mono {
   filter: grayscale(1) contrast(1.05);
 }
 
-/* Placement in a reading column. On a wide screen left and right hang
- * beside the text, and wide steps out of the column. */
+/* Placement in a reading column. On a wide screen photos marked left or
+ * right sit in the space beside the text, and wide ones span the page. */
 .prose > .place-left,
 .prose > .place-right,
 .prose > .place-wide,
@@ -734,27 +736,17 @@ img.tone-mono {
 }
 .prose > .place-wide,
 .prose > .pair {
-  width: min(calc(var(--wide) - 120px), calc(100vw - 2 * var(--gutter)));
+  width: 100%;
   max-width: none;
-  margin-left: 50%;
-  transform: translateX(-50%);
 }
 @media (min-width: 1100px) {
   .prose > .place-right,
   .prose > .place-left {
-    width: 340px;
-    max-width: none;
-    margin-block: 8px 24px;
-  }
-  .prose > .place-right {
     float: right;
-    margin-right: -200px;
-    margin-left: 40px;
-  }
-  .prose > .place-left {
-    float: left;
-    margin-left: -200px;
-    margin-right: 40px;
+    clear: right;
+    width: calc(100% - var(--col) - clamp(64px, 8vw, 120px));
+    max-width: 380px;
+    margin: 6px 0 32px;
   }
   .prose::after {
     content: "";
@@ -845,9 +837,7 @@ img.tone-mono {
 /* Story text shares the row with margin notes, so photos stay in its column. */
 .story .prose > .pair,
 .story .prose > .place-wide {
-  width: auto;
-  margin-left: 0;
-  transform: none;
+  max-width: var(--col);
 }
 .plate.hero-photo {
   max-width: 420px;
@@ -855,5 +845,78 @@ img.tone-mono {
 @media (min-width: 900px) {
   .plate.hero-photo {
     max-width: none;
+  }
+}
+
+/* Section headings inside a page: a short plain name, with years beside it
+ * where they help. */
+.prose > h2.section {
+  clear: none;
+  margin: 64px 0 16px;
+  padding-top: 20px;
+  border-top: 1px solid var(--rule);
+  font-size: 26px;
+  line-height: 1.2;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 16px;
+}
+.prose > h2.section:first-child {
+  margin-top: 0;
+}
+.prose > h2.section .when {
+  font-family: var(--sans);
+  font-size: 14px;
+  color: var(--mute);
+}
+.plain-list {
+  margin: 0 0 1.1em;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--rule);
+}
+.plain-list li {
+  padding: 10px 0;
+  border-bottom: 1px solid var(--rule);
+  font-size: 18px;
+  line-height: 1.45;
+}
+
+/* Two columns on a wide screen: the main list or text on the left, and the
+ * record or people beside it. */
+.two-up {
+  display: grid;
+  gap: 56px;
+}
+.two-up > div > .entries:first-child h2,
+.two-up section > h2:first-child {
+  margin-top: 0;
+}
+.two-up > .prose p {
+  font-size: 22px;
+  line-height: 1.5;
+}
+@media (min-width: 1000px) {
+  .two-up {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    column-gap: clamp(56px, 7vw, 112px);
+    align-items: start;
+  }
+}
+.story-list .story-name {
+  font-size: 22px;
+}
+
+/* How I see problems: his words on the left, where it shows on the right. */
+@media (min-width: 1000px) {
+  .steps li {
+    display: grid;
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    column-gap: clamp(56px, 7vw, 112px);
+    align-items: baseline;
+  }
+  .steps .said {
+    margin: 0;
   }
 }

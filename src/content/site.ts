@@ -68,12 +68,15 @@ export const person = {
   ],
 };
 
-/* A paragraph, a picture, a drawing, or an open question for Sanjid.
+/* A paragraph, a section heading, a short list, a picture, a drawing, or an
+ * open question for Sanjid.
  * Gaps are internal notes and never render. */
 export type Block =
   | { kind: "p"; text: string }
   | { kind: "photo"; plate: Plate; place?: Place }
   | { kind: "pair"; plates: Plate[] }
+  | { kind: "h"; text: string; when?: string }
+  | { kind: "list"; items: string[] }
   | { kind: "diagram" }
   | { kind: "gap"; ask: string };
 
@@ -145,32 +148,53 @@ export const about = {
   title: "How I got here",
   portrait: img("emk-center"),
   blocks: [
+    { kind: "h", text: "Narayanganj" },
     {
       kind: "p",
       text: "I grew up by the Shitalakshya river in Narayanganj. It is my hometown, and I still have a lot of affection for it.",
     },
     { kind: "gap", ask: "Childhood in Narayanganj and the Shitalakshya. A place, a routine, a person, something you saw often." },
     { kind: "gap", ask: "Where curiosity began. The first thing you remember wanting to take apart or understand." },
+
+    { kind: "h", text: "AUST", when: "2018 to 2022" },
+    { kind: "photo", plate: img("convocation-2025"), place: "right" },
     { kind: "gap", ask: "Why electrical engineering. A choice, a default, or someone’s push." },
     {
       kind: "p",
-      text: "I studied electrical and electronic engineering at Ahsanullah University of Science and Technology from 2018 to 2022. What I built there was small and practical. A low cost pulse oximeter, a cycloconverter, a circuit for automatic power factor improvement, audio sent over frequency division multiplexing. My thesis was IntelliClass, a classroom that took attendance by RFID, sensed its own environment and logged everything to the cloud.",
+      text: "I studied electrical and electronic engineering at Ahsanullah University of Science and Technology. What I built there was small and practical.",
+    },
+    {
+      kind: "list",
+      items: [
+        "A low cost pulse oximeter",
+        "A cycloconverter",
+        "A circuit for automatic power factor improvement",
+        "Audio sent over frequency division multiplexing",
+        "IntelliClass, my thesis. A classroom that took attendance by RFID, sensed its own environment and logged everything to the cloud.",
+      ],
     },
     { kind: "gap", ask: "What early building taught you." },
-    { kind: "photo", plate: img("convocation-2025"), place: "right" },
+
+    { kind: "h", text: "MenuKi", when: "2022 to 2023" },
+    { kind: "photo", plate: img("menuki-salt-and-pepper"), place: "right" },
     {
       kind: "p",
       text: "In 2022 I co-founded MenuKi, a QR menu service for restaurants. We designed a pilot that put it in 25 restaurants across two cities in five days.",
     },
-    { kind: "photo", plate: img("menuki-salt-and-pepper"), place: "left" },
     { kind: "gap", ask: "The first customer experience. The first time someone decided whether what you made was worth their money." },
     {
       kind: "p",
       text: "In 2023 I also spent a few months on business operations at Desktop IT, doing market research and planning for growth.",
     },
+
+    { kind: "h", text: "ZEROOZEN", when: "2023 to now" },
     {
       kind: "p",
-      text: "Later in 2023 I joined ZEROOZEN as a hardware design engineer and spent most of that time on one charger, through twenty three versions. In February 2024 I became a co-founder and its Chief Product Officer. Since then the work has spread from circuit boards to vehicles, batteries, data, supply chains, investors and a fleet of more than 400 vehicles.",
+      text: "Later in 2023 I joined ZEROOZEN as a hardware design engineer and spent most of that time on one charger, through twenty three versions.",
+    },
+    {
+      kind: "p",
+      text: "In February 2024 I became a co-founder and its Chief Product Officer. Since then the work has spread from circuit boards to vehicles, batteries, data, supply chains, investors and a fleet of more than 400 vehicles.",
     },
     { kind: "photo", plate: img("thingspeak-desk"), place: "wide" },
     { kind: "gap", ask: "What co-founding changed about ownership." },
@@ -271,23 +295,28 @@ export const stories: Story[] = [
     diagram: "vehicle",
     diagramCaption: "Side elevation, schematic. Where the battery, motor and GPS sit.",
     blocks: [
+      { kind: "h", text: "The need" },
       {
         kind: "p",
         text: "A three wheeler in Bangladesh is a working machine. Someone’s income depends on how much it can carry, how far it goes on a charge, how often it is off the road, and how much it cost in the first place.",
       },
+      { kind: "h", text: "What was missing" },
       {
         kind: "p",
         text: "When we looked closely at the numbers electric three wheelers were being designed around, range and depth of discharge and energy per kilometre, most of them came from assumptions made somewhere else. Other roads, other loads, other drivers.",
       },
+      { kind: "h", text: "The decision" },
       {
         kind: "p",
         text: "So before designing anything, I built a mathematical model of the powertrain and drivetrain. Give it local operating conditions and it works out range, depth of discharge and energy use per kilometre. The motor size and the battery pack came out of that model, and so did most of the decisions after them.",
       },
+      { kind: "h", text: "What we built" },
       { kind: "diagram" },
       {
         kind: "p",
         text: "What came out the other end has an optimized chassis, a battery and motor matched to each other, dual lock security, and GPS with live connectivity and remote on and off. The connectivity matters more than it sounds. It means the vehicle can be looked after as part of a fleet, not only driven.",
       },
+      { kind: "h", text: "In the field" },
       {
         kind: "p",
         text: "ZENGO ALFA launched in September 2025. Since then it has done more than 2.8 lakh km in field operation and brought in over BDT 3.5 million in its first quarter. The electrical architecture underneath is meant to outlast this one vehicle. It is the base for the commercial and passenger platforms that come next.",
@@ -311,23 +340,28 @@ export const stories: Story[] = [
     diagram: "pack",
     diagramCaption: "Pack architecture, schematic. The master and slave BMS is ZEN BMS, still in development.",
     blocks: [
+      { kind: "h", text: "The need" },
       {
         kind: "p",
         text: "In a commercial electric vehicle the battery decides most things. How far it goes, how long it stays on the road, what it costs to run, and when the owner has to find the money for a new one.",
       },
+      { kind: "h", text: "The decision" },
       {
         kind: "p",
         text: "Most packs arrive with a specification written for someone else’s conditions. We wanted to start from ours. So we wrote down what the pack had to do here first, and only then chose the architecture and set the BMS requirements to meet it.",
       },
+      { kind: "diagram" },
+      { kind: "h", text: "Testing" },
       {
         kind: "p",
         text: "Testing was the slow part. Before it went to customers the pack ran 1.2 lakh km on our own driving cycle, because laboratory validation was not enough.",
       },
-      { kind: "diagram" },
+      { kind: "h", text: "In the field" },
       {
         kind: "p",
         text: "More than 20 packs went into real vehicles in the first two months, and deliveries have been growing about 6.5 percent a month. The target is more than 250 by the end of 2026. That is a target, not a result yet.",
       },
+      { kind: "h", text: "What comes next" },
       {
         kind: "p",
         text: "The next layer is our own battery management. ZEN BMS is a hybrid master and slave design with active and passive balancing. It estimates state of charge with an extended Kalman filter alongside Coulomb counting. It is still in development.",
@@ -350,19 +384,18 @@ export const stories: Story[] = [
     diagram: "charger",
     diagramCaption: "Power stage, block diagram, and the four stage charging profile.",
     blocks: [
-      {
-        kind: "p",
-        text: "It took twenty three versions to get the charger right.",
-      },
+      { kind: "h", text: "The need" },
       {
         kind: "p",
         text: "For a three wheeler driver, charging decides when the vehicle can go back to work. For a garage owner, it shows up on the electricity bill. For the battery, it decides how quickly it ages.",
       },
+      { kind: "h", text: "The decision" },
       {
         kind: "p",
         text: "So we did not start from the converter. We started from that working day and asked for one charger that could handle the lithium ion and lead acid packs people actually own, at 48 and 60 volts, while giving us control over how energy goes into the battery. The circuit came after that question, not before it.",
       },
       { kind: "diagram" },
+      { kind: "h", text: "What we built" },
       {
         kind: "p",
         text: "What came out of it is a 1.2 kW half bridge resonant converter with an EMI filter on the input. The firmware runs a four stage charge, precharge, constant current, constant voltage and float, tuned to slow battery degradation. It protects against short circuits, overcharging and reversed polarity.",
@@ -370,8 +403,9 @@ export const stories: Story[] = [
 
       {
         kind: "p",
-        text: "I did the PCB layout and wrote the embedded C and C++ firmware, and simulated it in LTspice, PLECS and Simulink. Then we built it, tested it, found what was wrong, and built it again.",
+        text: "It took twenty three versions to get the charger right. I did the PCB layout and wrote the embedded C and C++ firmware, and simulated it in LTspice, PLECS and Simulink. Then we built it, tested it, found what was wrong, and built it again.",
       },
+      { kind: "h", text: "The result" },
       {
         kind: "p",
         text: "It reaches 87 percent efficiency at peak load. The habits it forced on us, the hardware design standards and the way we source components, became the starting point for every ZEROOZEN product after it.",
@@ -395,23 +429,28 @@ export const stories: Story[] = [
     diagram: "drivecycle",
     diagramCaption: "An illustrative stop and start trace, and the light gate over the 32 tooth gear.",
     blocks: [
+      { kind: "h", text: "The need" },
       {
         kind: "p",
         text: "Every vehicle is designed around a drive cycle, a standard pattern of speeding up, cruising and stopping that stands in for real driving. The common ones, NEDC and WLTC, were built for other places. Dhaka’s traffic, roads, climate and constant stopping and starting are something else.",
       },
+      { kind: "h", text: "What was missing" },
       {
         kind: "p",
         text: "Bangladesh did not have a drive cycle of its own. So instead of adjusting our assumptions around someone else’s standard, we started collecting our own.",
       },
+      { kind: "h", text: "What we built" },
       {
         kind: "p",
         text: "The first problem was cost. Commercial OBD loggers cost too much to put on a fleet of light electric vehicles. ZENBOX was the answer. A high frequency laser sits over a 32 tooth gear and works as a light gate, counting teeth as they pass. That gives RPM once a second without touching the drivetrain, at roughly 90 percent lower unit cost than a commercial logger.",
       },
       { kind: "diagram" },
+      { kind: "h", text: "In the field" },
       {
         kind: "p",
         text: "I captured operating conditions in Mirpur, the urban density, traffic patterns, climate, road infrastructure and the stop and start rhythm of the place, and built the Dhaka Urban Drive Cycle from them. As far as we know it is the first urban drive cycle for Bangladesh.",
       },
+      { kind: "h", text: "Where it is used now" },
       {
         kind: "p",
         text: "It is now the baseline ZEROOZEN uses to evaluate vehicle performance, size battery packs and estimate range. It is also the reference for future regulatory submissions.",

@@ -141,6 +141,21 @@ function Blocks({ blocks, story }: { blocks: Block[]; story?: Story }) {
     <>
       {blocks.map((b, i) => {
         if (b.kind === "p") return <p key={i}>{b.text}</p>;
+        if (b.kind === "h")
+          return (
+            <h2 key={i} className="section">
+              {b.text}
+              {b.when && <span className="when">{b.when}</span>}
+            </h2>
+          );
+        if (b.kind === "list")
+          return (
+            <ul key={i} className="plain-list">
+              {b.items.map((t) => (
+                <li key={t}>{t}</li>
+              ))}
+            </ul>
+          );
         if (b.kind === "photo") return <Photo key={i} plate={b.plate} place={b.place} className="figure" />;
         if (b.kind === "pair") return <PhotoRow key={i} plates={b.plates} className="figure pair" />;
         if (b.kind === "diagram" && story)
@@ -301,10 +316,11 @@ function Moves() {
   return (
     <article>
       <PageHead title={moves.title} />
-      <div className="col prose">
+      <div className="col-wide two-up">
+      <div className="prose">
         <Blocks blocks={moves.blocks} />
       </div>
-      <section className="col">
+      <section>
         <h2>{moves.peopleHeading}</h2>
         <ul className="people">
           {moves.people.map((p) => (
@@ -315,6 +331,7 @@ function Moves() {
           ))}
         </ul>
       </section>
+      </div>
     </article>
   );
 }
@@ -323,7 +340,7 @@ function Problems() {
   return (
     <article>
       <PageHead title={problems.title} />
-      <ol className="col steps">
+      <ol className="col-wide steps">
         {problems.steps.map((s) => (
           <li key={s.text}>
             <p className="said">{s.text}</p>
@@ -343,7 +360,7 @@ function WorkIndex() {
       <PageHead title={work.intro.split(". ")[0] + "."}>
         <p className="lede">{work.intro.split(". ").slice(1).join(". ")}</p>
       </PageHead>
-      <div className="col">
+      <div className="col-wide two-up">
         <ol className="story-list">
           {stories.map((s) => (
             <li key={s.id}>
@@ -354,8 +371,10 @@ function WorkIndex() {
             </li>
           ))}
         </ol>
-        <Entries heading={work.recordHeading} items={record} />
-        <Entries heading={work.recognitionHeading} items={recognition} />
+        <div>
+          <Entries heading={work.recordHeading} items={record} />
+          <Entries heading={work.recognitionHeading} items={recognition} />
+        </div>
       </div>
     </article>
   );
