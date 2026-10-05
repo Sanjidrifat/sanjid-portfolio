@@ -1,403 +1,228 @@
 import { useEffect, useState } from "react";
 import {
-  SHOW_UNFINISHED_PAGES,
-  about,
-  contact,
-  home,
+  datasheet,
+  hero,
   life,
+  method,
   moves,
-  notes,
-  now,
   people,
   person,
-  problems,
   recognition,
   record,
   stories,
-  work,
+  timeline,
+  updated,
   type Block,
-  type Door,
   type Entry,
+  type Plate,
   type Story,
-} from "./content/site";
-import { DiagramPlate, Photo, PhotoRow } from "./components/Parts";
+} from "./content/sanjid";
 import { Diagram } from "./components/Diagrams";
 
-/* Pages are addressed by a plain hash token (#about, #zenpack) so the site
- * works as static files and inside previews that only allow simple hashes. */
-const PAGES = [
-  { id: "about", label: "About", ready: true },
-  { id: "moves", label: "What moves me", ready: moves.ready },
-  { id: "problems", label: "How I see problems", ready: problems.ready },
-  { id: "work", label: "Work", ready: true },
-  { id: "life", label: "Life", ready: true },
-  { id: "notes", label: "Notes", ready: notes.ready },
-  { id: "now", label: "Now", ready: now.ready },
+/* One long page. Sections are addressed by plain hash tokens so links work
+ * as static files and inside previews. */
+const SECTIONS = [
+  { id: "about", label: "About" },
+  { id: "photos", label: "Photos" },
+  { id: "work", label: "Work" },
+  { id: "life", label: "Life" },
+  { id: "contact", label: "Contact" },
 ];
 
-const shown = (id: string) =>
-  stories.some((s) => s.id === id) || PAGES.some((p) => p.id === id && (p.ready || SHOW_UNFINISHED_PAGES));
-
-function pageFromHash(): string {
-  const h = window.location.hash.replace(/^#/, "");
-  return shown(h) ? h : "home";
-}
-
-function usePage() {
-  const [page, setPage] = useState(pageFromHash);
-  useEffect(() => {
-    const on = () => {
-      setPage(pageFromHash());
-      window.scrollTo({ top: 0 });
-    };
-    window.addEventListener("hashchange", on);
-    return () => window.removeEventListener("hashchange", on);
-  }, []);
-  return page;
-}
+/* Photos already shown in the timeline are not repeated inside a story. */
+const inTimeline = new Set(timeline.map((t) => t.plate.src));
 
 export default function App() {
-  const page = usePage();
-  const story = stories.find((s) => s.id === page);
-  const section = story ? "work" : page;
-
+  /* A link straight to a project (#zenpack) opens it. */
   useEffect(() => {
-    const label = story ? story.name : PAGES.find((p) => p.id === page)?.label;
-    document.title = label ? `${label} · ${person.name}` : person.name;
-  }, [page, story]);
+    const open = () => openProject(window.location.hash.slice(1));
+    open();
+    window.addEventListener("hashchange", open);
+    return () => window.removeEventListener("hashchange", open);
+  }, []);
 
   return (
     <>
-      <a className="skip" href="#main" onClick={(e) => { e.preventDefault(); document.getElementById("main")?.focus(); }}>
+      <a className="skip" href="#main">
         Skip to content
       </a>
-      <header className="top">
-        <div className="col-wide top-inner">
-          <a className="name" href="#home">
-            {person.name}
-          </a>
-          <nav className="nav" aria-label="Pages">
-            {PAGES.filter((p) => shown(p.id)).map((p) => (
-              <a key={p.id} href={`#${p.id}`} aria-current={section === p.id ? "page" : undefined}>
-                {p.label}
-              </a>
-            ))}
-          </nav>
-        </div>
-      </header>
-
-      <main id="main" tabIndex={-1} key={page}>
-        {page === "home" && <Home />}
-        {page === "about" && <About />}
-        {page === "moves" && <Moves />}
-        {page === "problems" && <Problems />}
-        {page === "work" && <WorkIndex />}
-        {story && <StoryPage story={story} />}
-        {page === "life" && <Life />}
-        {page === "notes" && <Notes />}
-        {page === "now" && <Now />}
+      <Header />
+      <main id="main">
+        <Hero />
+        <Datasheet />
+        <Timeline />
+        <Work />
+        <Method />
+        <Moves />
+        <Life />
+        <Record />
+        <Contact />
       </main>
-
-      <footer className="foot">
-        <div className="col-wide foot-inner">
-          <span>{person.name}, {person.location}</span>
-          <Links />
-        </div>
+      <footer className="foot wrap">
+        <span>{person.name}</span>
+        <span>Updated {updated}</span>
       </footer>
     </>
   );
 }
 
-/* ---------- shared pieces ---------- */
+/* ---------- pieces ---------- */
 
-function Links() {
+function useDhakaTime() {
+  const fmt = () =>
+    new Intl.DateTimeFormat("en-GB", { timeZone: "Asia/Dhaka", hour: "2-digit", minute: "2-digit" }).format(new Date());
+  const [t, setT] = useState(fmt);
+  useEffect(() => {
+    const id = setInterval(() => setT(fmt()), 15000);
+    return () => clearInterval(id);
+  }, []);
+  return t;
+}
+
+function Header() {
+  const time = useDhakaTime();
   return (
-    <span className="links">
-      <a href={`mailto:${person.email}`}>{person.email}</a>
-      {person.links
-        .filter((l) => l.url)
-        .map((l) => (
-          <a key={l.label} href={l.url} target="_blank" rel="noreferrer">
-            {l.label}
+    <header className="top wrap">
+      <a className="mark" href="#main">
+        {person.name}
+      </a>
+      <nav aria-label="Sections">
+        {SECTIONS.map((s) => (
+          <a key={s.id} href={`#${s.id}`}>
+            {s.label}
           </a>
         ))}
-    </span>
-  );
-}
-
-/* A link onward. Points nowhere, and renders nothing, if its page is not
- * public yet. */
-function DoorLink({ door }: { door: Door }) {
-  if (!shown(door.page)) return null;
-  return (
-    <a className="door" href={`#${door.page}`}>
-      {door.label}
-    </a>
-  );
-}
-
-function Blocks({ blocks, story }: { blocks: Block[]; story?: Story }) {
-  return (
-    <>
-      {blocks.map((b, i) => {
-        if (b.kind === "p") return <p key={i}>{b.text}</p>;
-        if (b.kind === "h")
-          return (
-            <h2 key={i} className="section">
-              {b.text}
-              {b.when && <span className="when">{b.when}</span>}
-            </h2>
-          );
-        if (b.kind === "list")
-          return (
-            <ul key={i} className="plain-list">
-              {b.items.map((t) => (
-                <li key={t}>{t}</li>
-              ))}
-            </ul>
-          );
-        if (b.kind === "photo") return <Photo key={i} plate={b.plate} place={b.place} className="figure" />;
-        if (b.kind === "pair") return <PhotoRow key={i} plates={b.plates} className="figure pair" />;
-        if (b.kind === "diagram" && story)
-          return (
-            <div key={i} className="figure">
-              <DiagramPlate caption={story.diagramCaption}>
-                <Diagram kind={story.diagram} />
-              </DiagramPlate>
-            </div>
-          );
-        return null;
-      })}
-    </>
-  );
-}
-
-function PageHead({ title, children }: { title: string; children?: React.ReactNode }) {
-  return (
-    <header className="page-head col">
-      <h1>{title}</h1>
-      {children}
+      </nav>
+      <span className="clock" title="Local time in Dhaka">
+        Dhaka {time}
+      </span>
     </header>
   );
 }
 
-function Entries({ heading, items }: { heading: string; items: Entry[] }) {
+function Photo({ plate, caption, className }: { plate: Plate; caption?: string; className?: string }) {
+  if (!plate.src) return null;
   return (
-    <section className="entries">
-      <h2>{heading}</h2>
-      <ul>
-        {items.map((e) => (
-          <li key={e.what + e.where}>
-            <span className="when">{e.when}</span>
-            <span>
-              {e.what}
-              <span className="where">{e.where}</span>
-            </span>
-          </li>
-        ))}
-      </ul>
+    <figure className={`photo${className ? ` ${className}` : ""}`}>
+      <img src={plate.src} alt={plate.alt} loading="lazy" decoding="async" width={1000} height={Math.round(1000 / (plate.ratio ?? 1))} />
+      <figcaption>{caption ?? plate.caption}</figcaption>
+    </figure>
+  );
+}
+
+function SectionHead({ id, title, note }: { id: string; title: string; note?: string }) {
+  return (
+    <div className="section-head">
+      <h2 id={`${id}-title`}>{title}</h2>
+      {note && <p className="note">{note}</p>}
+    </div>
+  );
+}
+
+/* ---------- sections ---------- */
+
+function Hero() {
+  return (
+    <section className="hero wrap" aria-labelledby="hero-name">
+      <h1 id="hero-name" className="giant" aria-label={person.name}>
+        {person.first}
+      </h1>
+      <div className="hero-grid">
+        <Photo plate={hero.photo} className="hero-photo" />
+        <div className="hero-text">
+          <p className="greeting">{hero.greeting}</p>
+          <p className="intro">{hero.intro}</p>
+        </div>
+      </div>
     </section>
   );
 }
 
-/* ---------- pages ---------- */
-
-function Home() {
-  const { origin, cares, notices, works } = home;
+function Datasheet() {
   return (
-    <article className="home">
-      <header className="col-wide hero">
-        <div className="hero-text">
-          <h1>
-            <span>{home.greeting}</span>
-            <span className="soft">{home.line}</span>
-          </h1>
-          <p className="first">{home.intro}</p>
-        </div>
-        <Photo plate={home.photo} className="hero-photo" />
-      </header>
-
-      <section className="col scene">
-        <p className="statement">{origin.text}</p>
-        <DoorLink door={origin.door} />
-      </section>
-
-      <section className="col-wide scene cares">
-        <div className="cares-text">
-          <p className="statement">{cares.text}</p>
-          <DoorLink door={cares.door} />
-        </div>
-        <ul className="names" aria-label="People I keep coming back to">
-          {people.map((p) => (
-            <li key={p.name}>
-              <span className="who">{p.name}</span>
-              <span className="why">{p.line}</span>
-            </li>
+    <section id="about" className="wrap band-section" aria-labelledby="about-title">
+      <SectionHead id="about" title={datasheet.title} note={`${person.fullName}. ${datasheet.rev}.`} />
+      <div className="sheet">
+        <dl className="sheet-table">
+          {datasheet.rows.map((r) => (
+            <div key={r.label}>
+              <dt>{r.label}</dt>
+              <dd>{r.value}</dd>
+            </div>
           ))}
-        </ul>
-      </section>
+        </dl>
+        <Photo plate={datasheet.portrait} className="sheet-photo" />
+      </div>
+    </section>
+  );
+}
 
-      <section className="col scene notice">
-        <p>{notices.text}</p>
-        <DoorLink door={notices.door} />
-      </section>
-
-      <section className="scene band">
-        <div className="col-wide band-inner">
-          <Photo plate={works.photo} className="band-photo" />
-          <div className="band-text">
-            {works.text.map((t) => (
-              <p key={t}>{t}</p>
-            ))}
-            <p className="doors">
-              <DoorLink door={works.door} />
-              <DoorLink door={works.more} />
-            </p>
-          </div>
+function Timeline() {
+  const years = timeline.map((t) => t.when.slice(-4));
+  return (
+    <section id="photos" className="timeline" aria-labelledby="photos-title">
+      <div className="wrap">
+        <SectionHead id="photos" title="Along the way" note="Ten photographs from 2017 to 2026, in the order they were taken." />
+        <div className="reel-controls">
+          <button type="button" onClick={() => scrollReel(-1)} aria-label="Earlier photographs">
+            ←
+          </button>
+          <button type="button" onClick={() => scrollReel(1)} aria-label="Later photographs">
+            →
+          </button>
         </div>
-      </section>
-
-      <section className="scene along" aria-labelledby="along-head">
-        <h2 id="along-head" className="col-wide">Along the way</h2>
-        <ol>
-          {home.along.map((m) => (
-            <li key={m.when}>
-              <a href={shown(m.page) ? `#${m.page}` : undefined}>
-                {m.photo.src && <img src={m.photo.src} alt={m.photo.alt} loading="lazy" className={`tone-${m.photo.tone}`} />}
-                <span className="when">{m.when}</span>
-                <span className="what">{m.what}</span>
-              </a>
-            </li>
-          ))}
-        </ol>
-      </section>
-
-      {shown("now") && (
-        <section className="col prose scene">
-          {now.blocks.slice(0, 1).map((b, i) => (b.kind === "p" ? <p key={i}>{b.text}</p> : null))}
-          <DoorLink door={{ label: "Now", page: "now" }} />
-        </section>
-      )}
-
-      <section className="col scene write">
-        <h2>{contact.heading}</h2>
-        <p>{contact.lede}</p>
-        <Links />
-      </section>
-    </article>
-  );
-}
-
-/* A page that opens with its title beside a photo on a wide screen. */
-function PhotoHead({ title, plate, children }: { title: string; plate: Parameters<typeof Photo>[0]["plate"]; children?: React.ReactNode }) {
-  return (
-    <header className="col-wide photo-head">
-      <div>
-        <h1>{title}</h1>
-        {children}
       </div>
-      <Photo plate={plate} />
-    </header>
-  );
-}
-
-function About() {
-  return (
-    <article>
-      <PhotoHead title={about.title} plate={about.portrait} />
-      <div className="col prose">
-        <Blocks blocks={about.blocks} />
-      </div>
-    </article>
-  );
-}
-
-function Moves() {
-  return (
-    <article>
-      <PageHead title={moves.title} />
-      <div className="col-wide two-up">
-      <div className="prose">
-        <Blocks blocks={moves.blocks} />
-      </div>
-      <section>
-        <h2>{moves.peopleHeading}</h2>
-        <ul className="people">
-          {moves.people.map((p) => (
-            <li key={p.name}>
-              <span className="who">{p.name}</span>
-              <span className="why">{p.line}</span>
-            </li>
-          ))}
-        </ul>
-      </section>
-      </div>
-    </article>
-  );
-}
-
-function Problems() {
-  return (
-    <article>
-      <PageHead title={problems.title} />
-      <ol className="col-wide steps">
-        {problems.steps.map((s) => (
-          <li key={s.text}>
-            <p className="said">{s.text}</p>
-            <p className="seen">
-              {s.seen} <DoorLink door={s.door} />
-            </p>
+      <ol className="reel" id="reel" tabIndex={0} aria-label="Photographs in date order">
+        {timeline.map((t, i) => (
+          <li key={t.plate.src} className={i > 0 && years[i] !== years[i - 1] ? "new-year" : undefined}>
+            <span className="year">{years[i] !== years[i - 1] ? years[i] : ""}</span>
+            <Photo plate={t.plate} caption={t.caption} />
+            <span className="when">{t.when}</span>
           </li>
         ))}
       </ol>
-    </article>
+    </section>
   );
 }
 
-function WorkIndex() {
+function scrollReel(dir: number) {
+  const reel = document.getElementById("reel");
+  if (reel) reel.scrollBy({ left: dir * reel.clientWidth * 0.8, behavior: "smooth" });
+}
+
+function Work() {
   return (
-    <article>
-      <PageHead title={work.intro.split(". ")[0] + "."}>
-        <p className="lede">{work.intro.split(". ").slice(1).join(". ")}</p>
-      </PageHead>
-      <div className="col-wide two-up">
-        <ol className="story-list">
-          {stories.map((s) => (
-            <li key={s.id}>
-              <a href={`#${s.id}`}>
-                <span className="story-name">{s.name}</span>
-                <span className="story-dek">{s.dek}</span>
-              </a>
-            </li>
-          ))}
-        </ol>
-        <div>
-          <Entries heading={work.recordHeading} items={record} />
-          <Entries heading={work.recognitionHeading} items={recognition} />
-        </div>
+    <section id="work" className="wrap" aria-labelledby="work-title">
+      <SectionHead
+        id="work"
+        title="Work"
+        note="Four things I have spent a lot of time trying to make work at ZEROOZEN. Open one to read how it came about."
+      />
+      <div className="projects">
+        {stories.map((s) => (
+          <Project key={s.id} story={s} />
+        ))}
       </div>
-    </article>
+    </section>
   );
 }
 
-function StoryPage({ story }: { story: Story }) {
-  /* Edge to edge photos close the story, after the margin notes end. */
-  const isBleed = (b: Block) => b.kind === "photo" && b.place === "bleed";
-  const body = story.blocks.filter((b) => !isBleed(b));
-  const tail = story.blocks.filter(isBleed);
-  const i = stories.indexOf(story);
-  const next = stories[(i + 1) % stories.length];
+function Project({ story }: { story: Story }) {
+  const need = story.blocks.find((b) => b.kind === "p") as { text: string } | undefined;
   return (
-    <article className="story">
-      <PageHead title={story.name}>
-        <p className="lede">{story.dek}</p>
-        <p className="dateline">{story.when}</p>
-      </PageHead>
-      <div className="col-wide story-body">
-        <div className="prose">
-          <Blocks blocks={body} story={story} />
+    <details className="project" id={story.id}>
+      <summary>
+        <span className="p-when">{story.when}</span>
+        <span className="p-name">{story.name}</span>
+        <span className="p-dek">{story.dek}</span>
+        <span className="p-open" aria-hidden="true" />
+      </summary>
+      <div className="p-body">
+        <div className="p-story">
+          {need && <p className="p-lead">{need.text}</p>}
+          <Blocks blocks={story.blocks.slice(story.blocks.indexOf(need as Block) + 1)} story={story} />
         </div>
-        <aside className="margin" aria-label="Facts and figures">
+        <aside className="p-facts" aria-label={`${story.name} in figures`}>
           <dl>
             {story.notes.map((n) => (
               <div key={n.label}>
@@ -408,67 +233,178 @@ function StoryPage({ story }: { story: Story }) {
           </dl>
         </aside>
       </div>
-      {tail.map((b, k) =>
-        b.kind === "photo" ? (
-          <div key={k} className="band band-photo-only">
-            <Photo plate={b.plate} />
-          </div>
-        ) : null,
-      )}
-      <nav className="col story-next" aria-label="More work">
-        <a href="#work">All the work</a>
-        <a href={`#${next.id}`}>Next, {next.name}</a>
-      </nav>
-    </article>
+    </details>
+  );
+}
+
+function Blocks({ blocks, story }: { blocks: Block[]; story: Story }) {
+  return (
+    <>
+      {blocks.map((b, i) => {
+        switch (b.kind) {
+          case "p":
+            return <p key={i}>{b.text}</p>;
+          case "h":
+            return (
+              <h3 key={i}>
+                {b.text}
+                {b.when && <span>{b.when}</span>}
+              </h3>
+            );
+          case "list":
+            return (
+              <ul key={i}>
+                {b.items.map((t) => (
+                  <li key={t}>{t}</li>
+                ))}
+              </ul>
+            );
+          case "diagram":
+            return (
+              <figure key={i} className="diagram">
+                <div className="frame">
+                  <Diagram kind={story.diagram} />
+                </div>
+                <figcaption>{story.diagramCaption}</figcaption>
+              </figure>
+            );
+          case "photo":
+            return inTimeline.has(b.plate.src) ? null : <Photo key={i} plate={b.plate} />;
+          case "pair": {
+            const rest = b.plates.filter((p) => !inTimeline.has(p.src));
+            return rest.map((p) => <Photo key={`${i}-${p.src}`} plate={p} />);
+          }
+          default:
+            return null; // gaps are notes for Sanjid and never render
+        }
+      })}
+    </>
+  );
+}
+
+function Method() {
+  return (
+    <section className="wrap" aria-labelledby="method-title">
+      <SectionHead id="method" title="How I work" />
+      <ol className="method">
+        {method.map((m, i) => (
+          <li key={m.story}>
+            <span className="m-num">{i + 1}</span>
+            <p className="m-text">{m.text}</p>
+            <p className="m-seen">
+              {m.seen} <a href={`#${m.story}`} onClick={() => openProject(m.story)}>{stories.find((s) => s.id === m.story)?.name}</a>
+            </p>
+          </li>
+        ))}
+      </ol>
+    </section>
+  );
+}
+
+/* Following a link to a project opens it. */
+function openProject(id: string) {
+  const el = document.getElementById(id);
+  if (el instanceof HTMLDetailsElement) el.open = true;
+}
+
+function Moves() {
+  return (
+    <section className="wrap moves" aria-labelledby="moves-title">
+      <SectionHead id="moves" title="What moves me" />
+      <div className="moves-grid">
+        <p className="big-quote">{moves.text}</p>
+        <ul className="people" aria-label="People I keep coming back to">
+          {people.map((p) => (
+            <li key={p.name}>
+              <span className="who">{p.name}</span>
+              <span className="why">{p.line}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
   );
 }
 
 function Life() {
   return (
-    <article>
-      <PageHead title={life.title}>
-        <p className="lede">{life.intro}</p>
-      </PageHead>
-      <div className="col-wide life-rows">
-        {life.rows.map((row, k) => (
-          <PhotoRow key={k} plates={row} />
+    <section id="life" className="wrap" aria-labelledby="life-title">
+      <SectionHead id="life" title="Life" note={life.intro} />
+      <div className="life-grid">
+        {life.photos.map((p, i) => (
+          <Photo key={p.src} plate={p} className={`life-${i + 1}`} />
         ))}
       </div>
-    </article>
+    </section>
   );
 }
 
-function Notes() {
+function Record() {
   return (
-    <article>
-      <PageHead title={notes.title}>
-        <p className="lede">{notes.intro}</p>
-      </PageHead>
-      <div className="col prose">
-        {notes.items.map((n) => (
-          <p key={n.url}>
-            <a href={n.url}>{n.title}</a> <span className="dateline">{n.date}</span>
-          </p>
-        ))}
-        <p>
-          <a className="door" href={notes.substack} target="_blank" rel="noreferrer">
-            Substack
-          </a>
-        </p>
+    <section className="wrap" aria-labelledby="record-title">
+      <SectionHead id="record" title="Record" />
+      <div className="record">
+        <Entries heading="Work and study" items={record} />
+        <Entries heading="Recognition" items={recognition} />
       </div>
-    </article>
+    </section>
   );
 }
 
-function Now() {
+function Entries({ heading, items }: { heading: string; items: Entry[] }) {
   return (
-    <article>
-      <PhotoHead title={now.title} plate={now.photo}>
-        <p className="dateline">Updated {now.updated}</p>
-      </PhotoHead>
-      <div className="col prose">
-        <Blocks blocks={now.blocks} />
-      </div>
-    </article>
+    <div className="entries">
+      <h3>{heading}</h3>
+      <ul>
+        {items.map((e) => (
+          <li key={e.what + e.where}>
+            <span className="e-when">{e.when}</span>
+            <span className="e-what">
+              {e.what}
+              <span>{e.where}</span>
+            </span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+function Contact() {
+  const [copied, setCopied] = useState(false);
+  const copy = async () => {
+    try {
+      await navigator.clipboard.writeText(person.email);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      const sel = window.getSelection();
+      const node = document.getElementById("email");
+      if (sel && node) {
+        sel.selectAllChildren(node);
+      }
+    }
+  };
+  return (
+    <section id="contact" className="wrap contact" aria-labelledby="contact-title">
+      <h2 id="contact-title">Write to me</h2>
+      <p className="email">
+        <a id="email" href={`mailto:${person.email}`}>
+          {person.email}
+        </a>
+        <button type="button" onClick={copy}>
+          {copied ? "Copied" : "Copy"}
+        </button>
+      </p>
+      <p className="links">
+        {person.links
+          .filter((l) => l.url)
+          .map((l) => (
+            <a key={l.label} href={l.url} target="_blank" rel="noreferrer">
+              {l.label}
+            </a>
+          ))}
+      </p>
+    </section>
   );
 }
