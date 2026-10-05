@@ -1,0 +1,221 @@
+"""Builds the image library from Sanjid's uploaded photos.
+
+Source of truth for every image: what is visible in it, Sanjid's own file
+name, and the camera date in its EXIF. Nothing else. Context that cannot be
+seen or read from those is marked uncertain.
+
+Run:  python3 scripts/image_library.py <uploads dir>
+Writes resized copies to public/images/library/, the manifest to
+src/content/image-library.json, and a readable version to docs/image-library.md.
+"""
+import json, os, sys, glob
+from PIL import Image, ImageOps
+
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+UP = sys.argv[1] if len(sys.argv) > 1 else "/mnt/user-data/uploads/hearth"
+
+# upload id prefix -> manifest entry
+L = [
+ dict(id="figuring-it-out", upload="a47f59ad", original="LOL WAS TRYING TO FIGURE OUT SOMETHING THAT I FORGOT.jpg",
+  primary="ENGINEERING / BUILDING", secondary=["PERSONAL / IDENTITY"],
+  description="Sanjid in a face mask and gloves, looking closely at a power electronics board with a toroid inductor, large capacitors and an aluminium heatsink. Whiteboard with circuit sketches behind him, solder and a multimeter on the desk.",
+  subjects=["Sanjid", "power electronics PCB"], context="Charger era at ZEROOZEN by date and hardware. Which product the board belongs to is not stated.",
+  context_confidence="medium", role=["HERO", "ENGINEERING DETAIL", "ABOUT"], section="Home",
+  story="Shows the site's opening line literally. Sanjid's own caption says he was trying to figure out something he forgot.",
+  quality="Good. Sharp on the board, natural light, slightly busy background.", orientation="portrait", status="KEEP",
+  alt="Sanjid, wearing a mask and gloves, inspecting a circuit board up close.",
+  caption="Mask on, gloves on, trying to figure out something I had forgotten. May 2024."),
+ dict(id="emk-center", upload="f51e63ef", original="at emk center.jpg",
+  primary="PERSONAL / IDENTITY", secondary=[],
+  description="Sanjid smiling, hands in pockets, standing beside a backlit EMK Center sign on a grey plaster wall. Black T-shirt with a lightning bolt logo.",
+  subjects=["Sanjid"], context="EMK Center (sign visible). Why he was there is not stated.",
+  context_confidence="high for place, none for occasion", role=["ABOUT", "HERO"], section="About",
+  story="The clearest, friendliest picture of his face. Tells a first-time visitor who Sanjid is.",
+  quality="Very good. Clean background, even light.", orientation="portrait", status="KEEP",
+  alt="Sanjid smiling beside the EMK Center sign.", caption="By the sign at the EMK Center in Dhaka."),
+ dict(id="candid-bw", upload="0b41e52b", original="life of me.jpg",
+  primary="PERSONAL / IDENTITY", secondary=["LIFE / PERSONAL"],
+  description="Black and white candid of Sanjid with longer, curly hair, looking down at a phone, seated on a tufted sofa.",
+  subjects=["Sanjid"], context="None beyond the file name.", context_confidence="none",
+  role=["LIFE", "ABOUT"], section="Life",
+  story="Quiet, unposed. Already black and white, so it sits naturally in the site.",
+  quality="Good. Soft focus, edited.", orientation="portrait", status="KEEP",
+  alt="Black and white photo of Sanjid looking down at his phone.", caption="Looking at my phone."),
+ dict(id="convocation-2025", upload="7e0ccbe2", original="CONVOCATION.jpg",
+  primary="LIFE / PERSONAL", secondary=["PERSONAL / IDENTITY"],
+  description="Sanjid in a graduation gown and sash in front of a gold backdrop reading 12th Convocation 2025, Ahsanullah University of Science and Technology.",
+  subjects=["Sanjid"], context="AUST 12th convocation, 2025 (backdrop text). He studied there 2018 to 2022 (CV).",
+  context_confidence="high", role=["ABOUT", "TIMELINE"], section="About",
+  story="Closes the university chapter of About.",
+  quality="Good. Warm, busy backdrop that turns flat grey in black and white.", orientation="portrait", status="KEEP",
+  alt="Sanjid in a graduation gown at the AUST 12th convocation.", caption="My convocation at AUST in 2025, three years after I finished the degree."),
+ dict(id="thingspeak-desk", upload="120a9f36", original="initial days of thingspeak server.jpg",
+  primary="RESEARCH / THINKING", secondary=["ENGINEERING / BUILDING", "PERSONAL / IDENTITY"],
+  description="Sanjid seated at a desk by a barred window overlooking the city. A hot air rework station, loose wires and boards, and a monitor showing a web dashboard with a chart and a reading of 210.0.",
+  subjects=["Sanjid", "workbench", "data dashboard"], context="Sanjid's file name: the early days of a ThingSpeak server. November 2023 (camera date). Which project it logged is not stated.",
+  context_confidence="medium", role=["ABOUT", "ENGINEERING DETAIL"], section="About",
+  story="The start of his ZEROOZEN years. Hardware and data on the same desk.",
+  quality="Fair. Backlit, face in shadow. Honest rather than polished.", orientation="landscape", status="KEEP",
+  alt="Sanjid at a cluttered workbench by a window, with a data dashboard on the monitor.",
+  caption="My desk in November 2023. A rework station, loose boards, and the first days of our ThingSpeak server on the screen."),
+ dict(id="zenwall-first-version", upload="96cf7af2", original="first version of zenwall chargers.jpg",
+  primary="PRODUCT", secondary=["DEPLOYMENT / OPERATIONS", "PERSONAL / IDENTITY"],
+  description="Selfie of Sanjid grinning beside two black wall-mounted chargers with lit lightning bolt logos and red emergency stop buttons, on a rough brick wall next to a switchboard.",
+  subjects=["Sanjid", "two ZEROOZEN chargers"], context="Sanjid's file name: first version of the ZenWall chargers. March 2024 (camera date). The setting looks like a working site, not a lab, but whose site is not stated.",
+  context_confidence="high for product, low for place", role=["PRODUCT", "OPERATIONS"], section="Work: ZEN Series Charger",
+  story="The charger leaving the bench and going on a real wall. The selfie carries how he felt about it.",
+  quality="Good. Selfie framing, slightly tilted.", orientation="portrait", status="KEEP",
+  alt="Sanjid taking a selfie beside two wall-mounted chargers on a brick wall.",
+  caption="The first ZenWall chargers on a real wall, emergency stops and all. March 2024."),
+ dict(id="meet-bangladesh-expo", upload="39e8775b", original="SANJID  CO. AT MEET BANGLADESHE EXPO.jpg",
+  primary="PRODUCT", secondary=["TEAM / COMPANY BUILDING", "PERSONAL / IDENTITY"],
+  description="Sanjid with an event lanyard in front of a stand titled Our Product Offerings, showing three ZEROOZEN chargers named ZenLite, ZenGo and ZenWall with rated power and battery support panels.",
+  subjects=["Sanjid", "ZenLite, ZenGo and ZenWall chargers"], context="Meet Bangladesh expo (file name and badge). Date unknown.",
+  context_confidence="high for event, none for date", role=["PRODUCT", "TIMELINE"], section="Work: ZEN Series Charger",
+  story="Where the charger work ended up: a family of products shown in public.",
+  quality="Good. Product text partly blurred.", orientation="landscape", status="KEEP",
+  alt="Sanjid at an expo stand in front of three wall-mounted chargers.",
+  caption="Our chargers, ZenLite, ZenGo and ZenWall, on the stand at the Meet Bangladesh expo."),
+ dict(id="zengo-alfa-first-lot", upload="fc48411c", original="DELIVERING THE FIRST LOT OF ZENGO ALFA VEHICLE 12.50AM AT NIGHT.jpg",
+  primary="DEPLOYMENT / OPERATIONS", secondary=["PRODUCT", "FIELD / REALITY", "TEAM / COMPANY BUILDING"],
+  description="At night on a street, several people push an orange ZEROOZEN electric three wheeler up a ramp into a shipping container. Another vehicle is already inside.",
+  subjects=["ZENGO ALFA vehicles", "people loading them"], context="Sanjid's file name: delivering the first lot of ZENGO ALFA vehicles, 12:50 at night. Camera date 19 September 2025, 00:28. ZENGO ALFA launched September 2025 (CV). Who the people are is not stated.",
+  context_confidence="high", role=["OPERATIONS", "PROJECT CONTEXT", "FIELD STORY"], section="Work: ZENGO ALFA",
+  story="The launch was not a stage. It was people pushing vehicles into a container after midnight.",
+  quality="Fair. Low light, some motion blur. Strong moment.", orientation="portrait", status="KEEP",
+  alt="People pushing an orange electric three wheeler up a ramp into a container at night.",
+  caption="Past midnight, pushing the first lot of ZENGO ALFA into a container by hand. September 2025."),
+ dict(id="shariful-garage", upload="0c10293f", original="onboarding zeroozens first garage partner shariful garage.jpg",
+  primary="CUSTOMER / ADOPTION", secondary=["FIELD / REALITY", "TEAM / COMPANY BUILDING"],
+  description="Three men in matching black lightning bolt T-shirts at the entrance of a garage full of painted rickshaws. Sanjid is on the left. They hold a notebook with a banknote on it together. A spare wheel rim and a pump lean on the wall.",
+  subjects=["Sanjid", "two other men", "rickshaw garage"], context="Sanjid's file name: onboarding Shariful Garage, ZEROOZEN's first garage partner. April 2024 (camera date). Names of the other two men are not stated.",
+  context_confidence="high for event, none for people", role=["CUSTOMER / ADOPTION", "FIELD STORY", "HERO"], section="Work index",
+  story="The world the work is for: a real garage, real vehicles, the first partner.",
+  quality="Very good. Clear faces, rich setting.", orientation="landscape", status="KEEP",
+  alt="Sanjid and two men holding a notebook at the entrance of a rickshaw garage.",
+  caption="The day Shariful Garage became our first garage partner. April 2024."),
+ dict(id="cells-on-bench-2026", upload="6341e85d", original="IMG20260411133354.jpg",
+  primary="ENGINEERING / BUILDING", secondary=["PRODUCT", "PERSONAL / IDENTITY"],
+  description="Sanjid in a ZEROOZEN T-shirt standing by a desk with an assembly of blue cylindrical cells wired with sense leads, a boxed lithium battery and a tall RePower cabinet behind.",
+  subjects=["Sanjid", "battery cell assembly"], context="April 2026 (camera date). No file name context. Whether the cells are a ZenPack is not stated.",
+  context_confidence="low", role=["ENGINEERING DETAIL", "ABOUT"], section="Now",
+  story="The most recent photo. Fits Now, which is about batteries and BMS.",
+  quality="Good. Even light, clear subject.", orientation="portrait", status="KEEP",
+  alt="Sanjid standing beside a battery cell assembly on a desk.", caption="A cell assembly wired up on the bench. April 2026."),
+ dict(id="orange-corners-certificate", upload="00e7ef32", original="orange corners bangladesh graduate certificate.jpg",
+  primary="TEAM / COMPANY BUILDING", secondary=["PERSONAL / IDENTITY"],
+  description="Sanjid holding a framed Orange Corners Bangladesh certificate of achievement awarded to Zeroozen for graduating from the 2nd cohort of the incubation programme. Framed photographs on the wall behind.",
+  subjects=["Sanjid", "certificate"], context="Certificate text is readable. Camera date August 2024, so the cohort finished by then.",
+  context_confidence="high", role=["TIMELINE", "ABOUT"], section="About: Recognition",
+  story="Evidence for the Orange Corners line. A milestone, so it stays small.",
+  quality="Good. Formal pose.", orientation="portrait", status="SECONDARY",
+  alt="Sanjid holding a framed Orange Corners Bangladesh certificate.",
+  caption="Holding our certificate from the second Orange Corners Bangladesh cohort. August 2024."),
+ dict(id="cycle-mustard-field", upload="fd7fcac1", original="cycle_sanjid.jpg",
+  primary="LIFE / PERSONAL", secondary=["TRAVEL / PLACES"],
+  description="Sanjid in a red T-shirt standing with a mountain bike in a field of yellow mustard flowers, trees and a bamboo fence behind, overcast sky.",
+  subjects=["Sanjid", "bicycle"], context="December 2017 (camera date). Place not stated.",
+  context_confidence="low", role=["LIFE", "TIMELINE"], section="Life",
+  story="Life outside work. The bicycle appears in four of the sixteen photos.",
+  quality="Fair. Older phone, subject small. The yellow is lost in black and white.", orientation="landscape", status="KEEP",
+  alt="Sanjid standing with his bicycle in a mustard field.", caption="With my bike in a mustard field. December 2017."),
+ dict(id="cycle-village-road", upload="88ffbe97", original="PicsArt_07-29-05.20.09.jpg",
+  primary="LIFE / PERSONAL", secondary=["PERSONAL / IDENTITY"],
+  description="Younger Sanjid in cycling gloves holding a bicycle on a narrow village road, a cycle rickshaw behind him. Square crop with white side borders.",
+  subjects=["Sanjid", "bicycle", "rickshaw in background"], context="July 2017 (camera date). Place not stated.",
+  context_confidence="low", role=["LIFE", "TIMELINE"], section="Life",
+  story="An early picture of him. Rickshaws were already in the frame.",
+  quality="Good. Had white side borders from an editing app, cropped off in the web copy.", orientation="portrait", status="KEEP", crop=[296, 0, 1040, 1280],
+  alt="A younger Sanjid with his bicycle on a village road.", caption="Gloves on and a village road ahead. July 2017."),
+ dict(id="cycle-dawn-road", upload="83c8e5bb", original="cycle.jpg",
+  primary="PHOTOGRAPHY / OBSERVATION", secondary=["LIFE / PERSONAL", "TRAVEL / PLACES"],
+  description="Ground level view along an empty asphalt road at dawn with mist and trees. A bicycle's wheels stand on the sandy verge on the left.",
+  subjects=["road", "bicycle wheels"], context="No date or place. Probably taken by Sanjid but not stated.",
+  context_confidence="low", role=["BACKGROUND / ATMOSPHERE", "LIFE"], section="Life",
+  story="Shows how he looks at things. Low to the ground, close to the road.",
+  quality="Good. Edited with a vignette.", orientation="landscape", status="KEEP",
+  alt="A misty road at dawn seen from ground level, with bicycle wheels on the verge.", caption="A misty road, seen from the verge."),
+ dict(id="bicycle-night-street", upload="553b7b51", original="IMG_20170729_085633_433.jpg",
+  primary="PHOTOGRAPHY / OBSERVATION", secondary=["LIFE / PERSONAL"],
+  description="A black and green bicycle on its kickstand on a city street at night under streetlights. Other cyclists in the background.",
+  subjects=["bicycle"], context="File name suggests July 2017. Place not stated.",
+  context_confidence="low", role=["LIFE"], section="Archive",
+  story="Same theme as the dawn road photo, weaker.",
+  quality="Fair. Low resolution (833 px), heavy edit.", orientation="square", status="SECONDARY",
+  alt="A bicycle parked on a city street at night.", caption="A bike under the streetlights. 2017."),
+ dict(id="friends-bonfire", upload="b5399aeb", original="FRIENDS_31ST DECEMBER 2021.jpg",
+  primary="LIFE / PERSONAL", secondary=["TEAM / COMPANY BUILDING"],
+  description="Eight young men, arms around each other, each kicking one leg up, beside a large bonfire at night. Sanjid is on the far left.",
+  subjects=["Sanjid", "seven friends", "bonfire"], context="Sanjid's file name says 31 December 2021. The camera date says 1 January 2023, 01:04. The year is uncertain. The friends are not named.",
+  context_confidence="medium", role=["LIFE"], section="Life",
+  story="The friend. Joy, nothing to do with work.",
+  quality="Good. Dramatic light, slight grain.", orientation="landscape", status="KEEP",
+  alt="Sanjid and seven friends kicking their legs up beside a bonfire at night.", caption="New Year’s Eve around a bonfire with friends."),
+ dict(id="menuki-salt-and-pepper", upload="60d2a8ac", original="Menuki with Tarikul bhai owner of Salt  Pepper.jpg",
+  primary="CUSTOMER / ADOPTION", secondary=["PERSONAL / IDENTITY", "TEAM / COMPANY BUILDING"],
+  description="Sanjid and a man in a turquoise shirt hold a small stack of MenuKi cards together, each with a QR code, the words Scan here for digital menu and Menu Ki?, in a restaurant with white brick walls, watercolour paintings and a counter.",
+  subjects=["Sanjid", "restaurant owner", "MenuKi QR cards"], context="Sanjid's file name: MenuKi with Tarikul bhai, owner of Salt & Pepper. Camera date 2 October 2023. His upload message says the pilot phase.",
+  context_confidence="high", role=["CUSTOMER / ADOPTION", "ABOUT", "TIMELINE"], section="About",
+  story="The first customer of something he co-founded, years before ZEROOZEN. A person deciding whether it was worth it.",
+  quality="Good. Clear faces, slightly posed.", orientation="portrait", status="KEEP",
+  alt="Sanjid handing MenuKi QR menu cards to a restaurant owner.",
+  caption="Handing a stack of MenuKi cards to Tarikul Bhai, who owns Salt & Pepper. Pilot days, October 2023."),
+ dict(id="menuki-table-card", upload="4f6c2f55", original="menu ki at a restaurant pilot phase.jpg",
+  primary="PRODUCT", secondary=["CUSTOMER / ADOPTION", "FIELD / REALITY"],
+  description="A MenuKi card with a QR code, Scan here for digital menu and Menu Ki?, stuck to the corner of a worn wooden restaurant table. Napkin holder and a brick wall behind.",
+  subjects=["MenuKi QR card", "restaurant table"], context="Sanjid's file name: MenuKi at a restaurant, pilot phase. Camera date 2 October 2023. Same evening as the handover photo; the restaurant is likely Salt & Pepper but the photo does not show it.",
+  context_confidence="high for product, medium for place", role=["PRODUCT", "CUSTOMER / ADOPTION"], section="Not used yet",
+  story="The product where it lived: on a table, waiting to be scanned.",
+  quality="Good. Shallow depth of field, card in sharp focus.", orientation="portrait", status="SECONDARY",
+  alt="A MenuKi QR menu card stuck to the corner of a wooden restaurant table.",
+  caption="A MenuKi card on a restaurant table during the pilot. Scan it and the menu opens on your phone. October 2023."),
+]
+
+# How each photo is shown. colour where colour carries the story, mono where
+# grey calms a busy or harsh photo, asis where Sanjid already edited it.
+TONES = {
+ "colour": ["shariful-garage", "zengo-alfa-first-lot", "menuki-salt-and-pepper", "menuki-table-card",
+            "friends-bonfire", "cycle-mustard-field", "cycle-village-road", "zenwall-first-version",
+            "emk-center", "cells-on-bench-2026"],
+ "mono": ["figuring-it-out", "thingspeak-desk", "convocation-2025", "meet-bangladesh-expo",
+          "orange-corners-certificate"],
+ "asis": ["candid-bw", "cycle-dawn-road", "bicycle-night-street"],
+}
+
+COLLECTIONS = {
+ "sanjid_identity": ["emk-center", "figuring-it-out", "candid-bw", "thingspeak-desk", "cells-on-bench-2026"],
+ "field_reality": ["shariful-garage", "zengo-alfa-first-lot", "cycle-village-road"],
+ "customer_adoption": ["shariful-garage", "menuki-salt-and-pepper", "menuki-table-card"],
+ "menuki": ["menuki-salt-and-pepper", "menuki-table-card"],
+ "engineering": ["figuring-it-out", "thingspeak-desk", "cells-on-bench-2026"],
+ "zengo_alfa": ["zengo-alfa-first-lot"],
+ "zenpack": [],
+ "zen_charger": ["figuring-it-out", "zenwall-first-version", "meet-bangladesh-expo"],
+ "zenbox": [],
+ "research": ["thingspeak-desk"],
+ "operations": ["zengo-alfa-first-lot", "zenwall-first-version"],
+ "team": ["menuki-salt-and-pepper", "shariful-garage", "orange-corners-certificate", "meet-bangladesh-expo"],
+ "life": ["friends-bonfire", "cycle-mustard-field", "cycle-village-road", "candid-bw", "convocation-2025"],
+ "photography": ["cycle-dawn-road", "bicycle-night-street"],
+ "travel": ["cycle-mustard-field", "cycle-dawn-road"],
+}
+
+def main():
+    out = os.path.join(ROOT, "public/images/library"); os.makedirs(out, exist_ok=True)
+    tone_of = {i: t for t, ids in TONES.items() for i in ids}
+    for e in L:
+        e["tone"] = tone_of.get(e["id"], "colour")
+        src = glob.glob(f"{UP}/{e['upload']}*/*.jpg")[0]
+        im = ImageOps.exif_transpose(Image.open(src)).convert("RGB")
+        e["camera_date"] = (Image.open(src).getexif().get_ifd(0x8769).get(36867) or None)
+        if e.get("crop"):
+            im = im.crop(tuple(e["crop"]))
+        im.thumbnail((1600, 1600))
+        path = f"images/library/{e['id']}.jpg"
+        im.save(os.path.join(ROOT, "public", path), "JPEG", quality=80, optimize=True, progressive=True)
+        e["src"] = path; e["width"], e["height"] = im.size
+    json.dump({"images": L, "collections": COLLECTIONS}, open(os.path.join(ROOT, "src/content/image-library.json"), "w"), indent=1, ensure_ascii=False)
+    print("wrote", len(L))
+
+if __name__ == "__main__":
+    main()
